@@ -4,7 +4,7 @@ homepage: https://github.com/sumit-home2904/from_filed_drop_down_plugin/tree/mai
 license: MIT
 Publisher: sumit sharma
 
-version: 1.0.2
+version: 1.1.0
 
 environment:
   sdk: ^3.5.3

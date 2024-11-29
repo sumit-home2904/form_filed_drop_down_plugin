@@ -1,3 +1,6 @@
+# 1.1.0
+search functionality issue fixed ui issue fixed and other small changes
+
 # 1.0.2
 small issue fixed and files changes
 
