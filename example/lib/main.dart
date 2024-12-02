@@ -51,6 +51,7 @@ class DropDownClass extends StatelessWidget {
               item : itemList,
               controller: countryController,
               textController: countryTextController,
+              dropdownOffset: const Offset(0, 50),
               textStyle: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w400

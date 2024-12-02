@@ -12,6 +12,7 @@ class FromFiledDropDown<T> extends StatefulWidget {
   /// Use this for[TextFormField] text form fields you want to read only.
   final bool filedReadOnly;
 
+  final Offset? dropdownOffset;
 
   /// Use this for [FromFieldDropDown] to read only from the dropdown you want.
   final bool readOnly;
@@ -212,6 +213,7 @@ class FromFiledDropDown<T> extends StatefulWidget {
     this.focusNode,
     this.addButton,
     this.validator,
+    this.dropdownOffset,
     this.maxLength,
     this.showCursor,
     this.menuMargin,
@@ -258,17 +260,17 @@ class _FromFiledDropDownState<T> extends State<FromFiledDropDown<T>> {
 
   /// calculate drop-down height base on item length
   double baseOnHeightCalculate() {
-    const double itemHeight = 38.0;
+    const double itemHeight = 35.0;
 
     if (widget.canShowButton) {
       if(items.isNotEmpty) {
-        return items.length * itemHeight + 45;
+        return items.length * itemHeight + 40;
       }else {
         return 120;
       }
     }
 
-    if(items.isNotEmpty) return items.length * (items.length == 1 ? 42 : itemHeight);
+    if(items.isNotEmpty) return items.length * (items.length == 1 ? 38 : itemHeight);
     return 120;
   }
 
@@ -348,6 +350,13 @@ class _FromFiledDropDownState<T> extends State<FromFiledDropDown<T>> {
     return null;
   }
 
+  Offset setOffset(){
+    return Offset(
+        widget.dropdownOffset?.dx??0,
+        displayOverlayBottom ? widget.dropdownOffset?.dy?? 55 : -10
+    );
+  }
+
   @override
   void didUpdateWidget(covariant FromFiledDropDown<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -404,7 +413,7 @@ class _FromFiledDropDownState<T> extends State<FromFiledDropDown<T>> {
               children: [
                 CompositedTransformFollower(
                     link: layerLink,
-                    offset: Offset(0, displayOverlayBottom ? 55 : -10),
+                    offset: setOffset(),
                     followerAnchor: displayOverlayBottom ? Alignment.topLeft : Alignment.bottomLeft,
                     child: SizedBox(
                       key: key1,
