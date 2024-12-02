@@ -36,8 +36,8 @@ import 'package:form_filed_drop_down/form_filed_drop_down.dart';
 ```dart
 import 'package:flutter/material.dart';
 import 'package:from_filed_drop_down/form_filed_drop_down.dart';
-final countryController = OverlayPortalController();
-final countryTextController = TextEditingController();
+final itemController = OverlayPortalController();
+final itemTextController = TextEditingController();
 
 String? selectedItem;
 List<String> itemList = ["item","item 2","item 3","item 4","item 5","item 6"];
@@ -49,8 +49,8 @@ class DropDownClass extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FormFiledDropDown<String>(
-        controller: countryController,
-        textController: countryTextController,
+        controller: itemController,
+        textController: itemTextController,
         item : itemList,
         textStyle: const TextStyle(
             fontSize: 12,
@@ -99,7 +99,7 @@ class DropDownClass extends StatelessWidget {
         children: [
           FormFiledDropDown<String>(
             item : itemList,
-            controller: countryController,
+            controller: itemController,
             canShowButton: true,
             addButton:  InkWell(
               onTap: () {
@@ -131,7 +131,7 @@ class DropDownClass extends StatelessWidget {
                 ),
               ),
             ),
-            textController: countryTextController,
+            textController: itemTextController,
             textStyle: const TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w400
@@ -178,8 +178,8 @@ class DropDownClass extends StatelessWidget {
       body: Column(
         children: [
           FormFiledDropDown<String>(
-            controller: countryController,
-            textController: countryTextController,
+            controller: itemController,
+            textController: itemTextController,
             initialItem: selectedItem,
             item : itemList,
             onTap: () async{
@@ -221,7 +221,9 @@ class DropDownClass extends StatelessWidget {
                     )
                 )
             ),
-            onChanged: (String? value) {},
+            onChanged: (String? value) {
+              itemTextController.text = value;
+            },
             onSearch: (value) async {
               // We can call your API and search from it. Also, I can implement local search in your static list.
               return itemList.where((element) {

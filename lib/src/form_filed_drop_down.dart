@@ -560,7 +560,7 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
                     onTap: ()=> onItemSelected(index),
                     child: widget.listItemBuilder(
                         context,
-                        items[index], selected, () {}
+                        items[index], selected,
                     ),
                   );
                 },

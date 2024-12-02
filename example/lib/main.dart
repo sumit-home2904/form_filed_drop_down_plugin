@@ -78,7 +78,7 @@ class DropDownClass extends StatelessWidget {
                 ),
               ),
               onChanged: (String? value) {},
-              listItemBuilder: (context, item, isSelected, onItemSelect) {
+              listItemBuilder: (context, item, isSelected) {
                 return Text(
                   item,
                   style: TextStyle(
