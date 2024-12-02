@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:from_filed_drop_down/from_filed_drop_down.dart';
+import 'package:from_filed_drop_down/form_filed_drop_down.dart';
 
 void main() {
   runApp(const MyApp());
@@ -47,7 +47,7 @@ class DropDownClass extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            FromFiledDropDown<String>(
+            FormFiledDropDown<String>(
               item : itemList,
               controller: countryController,
               textController: countryTextController,

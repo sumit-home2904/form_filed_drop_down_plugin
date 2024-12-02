@@ -31,11 +31,11 @@ import 'package:animated_custom_dropdown/custom_dropdown.dart';
 ```
 
 ## Example usage
-### **1.Basic FromFiledDropDown**
+### **1.Basic FormFiledDropDown**
 
 ```dart
 import 'package:flutter/material.dart';
-import 'package:from_filed_drop_down/from_filed_drop_down.dart';
+import 'package:from_filed_drop_down/form_filed_drop_down.dart';
 final countryController = OverlayPortalController();
 final countryTextController = TextEditingController();
 
@@ -48,7 +48,7 @@ class DropDownClass extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FromFiledDropDown<String>(
+      body: FormFiledDropDown<String>(
         controller: countryController,
         textController: countryTextController,
         item : itemList,
@@ -84,7 +84,7 @@ class DropDownClass extends StatelessWidget {
 ```
 
 
-### **2.FromFiledDropDown with a Custom Add Button**
+### **2.FormFiledDropDown with a Custom Add Button**
 The addButton property lets you define a custom widget to trigger additional actions, such as 
 opening a dialog box, navigating to another screen, or performing user-defined functionality.
 
@@ -97,7 +97,7 @@ class DropDownClass extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          FromFiledDropDown<String>(
+          FormFiledDropDown<String>(
             item : itemList,
             controller: countryController,
             canShowButton: true,
@@ -163,7 +163,7 @@ class DropDownClass extends StatelessWidget {
 }
 ```
 
-### **3.FromFiledDropDown with Dynamic Search or API Integration**
+### **3.FormFiledDropDown with Dynamic Search or API Integration**
 
 Advanced usage example for fetching dropdown items dynamically from an API.
 
@@ -177,7 +177,7 @@ class DropDownClass extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          FromFiledDropDown<String>(
+          FormFiledDropDown<String>(
             controller: countryController,
             textController: countryTextController,
             initialItem: selectedItem,

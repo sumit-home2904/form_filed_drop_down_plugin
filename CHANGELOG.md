@@ -1,3 +1,6 @@
+# 1.1.4
+spelling issue fixed 
+
 # 1.1.3
 ui bug fixed
 

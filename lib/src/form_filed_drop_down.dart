@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'animated_section.dart';
 import 'signatures.dart';
 
-class FromFiledDropDown<T> extends StatefulWidget {
+class FormFiledDropDown<T> extends StatefulWidget {
 
   /// List of strings to display in the dropdown.
   final List<T>? item;
@@ -121,7 +121,7 @@ class FromFiledDropDown<T> extends StatefulWidget {
   ///   ),
   final InputDecoration filedDecoration;
 
-  /// call when [FromFiledDropDown] you are using the API or to load your list items
+  /// call when [FormFiledDropDown] you are using the API or to load your list items
   final Future<List<T>> Function()? onTap;
 
   /// Enable the validation listener on item change.
@@ -204,7 +204,7 @@ class FromFiledDropDown<T> extends StatefulWidget {
   /// will be constructed automatically and its `text` will be initialized
   /// to [initialItem] or the empty string.
 
-  const FromFiledDropDown({
+  const FormFiledDropDown({
     super.key,
     this.item,
     this.onTap,
@@ -246,10 +246,10 @@ class FromFiledDropDown<T> extends StatefulWidget {
   });
 
   @override
-  State<FromFiledDropDown<T>> createState() => _FromFiledDropDownState<T>();
+  State<FormFiledDropDown<T>> createState() => _FormFiledDropDownState<T>();
 }
 
-class _FromFiledDropDownState<T> extends State<FromFiledDropDown<T>> {
+class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
   T? selectedItem;
   late List<T> items;
   final layerLink = LayerLink();
@@ -358,7 +358,7 @@ class _FromFiledDropDownState<T> extends State<FromFiledDropDown<T>> {
   }
 
   @override
-  void didUpdateWidget(covariant FromFiledDropDown<T> oldWidget) {
+  void didUpdateWidget(covariant FormFiledDropDown<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (widget.item != oldWidget.item) {
