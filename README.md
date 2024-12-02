@@ -222,7 +222,6 @@ class DropDownClass extends StatelessWidget {
                 )
             ),
             onChanged: (String? value) {
-              itemTextController.text = value;
             },
             onSearch: (value) async {
               // We can call your API and search from it. Also, I can implement local search in your static list.
