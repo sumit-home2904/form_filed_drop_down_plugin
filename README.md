@@ -1,185 +1,288 @@
-# from_filed_drop_down
+# from_filed_drop_down 🛠️
 
-A new Flutter project.
+A highly customizable dropdown widget for Flutter with powerful features like search, API integration, 
+custom UI support, and validation.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## Features
 
-A few resources to get you started if this is your first Flutter project:
+- Display static items or fetch them dynamically via APIs.
+- Fully customizable dropdown appearance using BoxDecoration and custom item builders.
+- Support for readonly and searchable dropdowns, along with additional customization options.
+- Easy integration with TextFormField for validation and decoration.
+- Advanced cursor styling for an enhanced user interface.
+- Seamless integration of an add-button for custom functionality.
+- Flexible search and filter options, supporting both local and API-based data.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Installation
+1.Add the latest version of package to your pubspec.yaml (and run flutter pub get):
+
+```yaml
+dependencies:
+  from_filed_drop_down: latest_version
+```
+
+2.Import the package and use it in your Flutter App.
+```dart
+import 'package:animated_custom_dropdown/custom_dropdown.dart';
+```
+
+## Example usage
+### **1.Basic FromFiledDropDown**
 
 ```dart
-class DropDownClass extends StatefulWidget {
+import 'package:flutter/material.dart';
+import 'package:from_filed_drop_down/from_filed_drop_down.dart';
+final countryController = OverlayPortalController();
+final countryTextController = TextEditingController();
+
+String? selectedItem;
+List<String> itemList = ["item","item 2","item 3","item 4","item 5","item 6"];
+
+class DropDownClass extends StatelessWidget {
   const DropDownClass({super.key});
 
   @override
-  State<DropDownClass> createState() => _DropDownClassState();
-}
-
-class _DropDownClassState extends State<DropDownClass> {
-
-  final countryController = OverlayPortalController();
-  final countryTextController = TextEditingController();
-
-  String? selectedItem;
-  List<String> itemList = ["item","item 2","item 3","item 4","item 5","item 6"];
-
-  @override
-  void dispose() {
-    countryTextController.dispose();
-    super.dispose();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: FromFiledDropDown<String>(
+        controller: countryController,
+        textController: countryTextController,
+        item : itemList,
+        textStyle: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w400
+        ),
+        filedDecoration: const InputDecoration(),
+        onChanged: (String? value) {},
+        listItemBuilder: (context, item, isSelected, onItemSelect) {
+          return Text(
+            item,
+            style: TextStyle(
+                fontSize: 12,
+                color: isSelected ? Colors.white : Colors.black,
+                fontWeight: FontWeight.w400
+            ),
+          );
+        },
+        selectedItemBuilder: (context, {item}) {
+          return Text(
+            item!,
+            style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w400
+            ),
+          );
+        },
+      ),
+    );
   }
+}
+```
+
+
+### **2.FromFiledDropDown with a Custom Add Button**
+The addButton property lets you define a custom widget to trigger additional actions, such as 
+opening a dialog box, navigating to another screen, or performing user-defined functionality.
+
+```dart
+class DropDownClass extends StatelessWidget {
+  const DropDownClass({super.key});
+  @override
+  Widget build(BuildContext context) {
+
+    return Scaffold(
+      body: Column(
+        children: [
+          FromFiledDropDown<String>(
+            item : itemList,
+            controller: countryController,
+            canShowButton: true,
+            addButton:  InkWell(
+              onTap: () {
+                // add your event's
+              },
+              child: Container(
+                height: 40,
+                padding: const EdgeInsets.all(10),
+                decoration:BoxDecoration(
+                  color: Colors.green,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+                child: const Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                          "Add",
+                          maxLines: 1,
+                          textAlign:TextAlign.start,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(color: Colors.white)
+                      ),
+                    ),
+                    Icon(
+                      Icons.add,
+                      color: Colors.white,
+                    )
+                  ],
+                ),
+              ),
+            ),
+            textController: countryTextController,
+            textStyle: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w400
+            ),
+            menuDecoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(
+                    color: Colors.blueAccent
+                )
+            ),
+            filedDecoration: const InputDecoration(),
+            onChanged: (String? value) {},
+            listItemBuilder: (context, item, isSelected, onItemSelect) {
+              return Text(
+                item,
+                style: TextStyle(
+                    fontSize: 12,
+                    color: isSelected ? Colors.white : Colors.black,
+                    fontWeight: FontWeight.w400
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+
+### **3.FromFiledDropDown with Dynamic Search or API Integration**
+
+Advanced usage example for fetching dropdown items dynamically from an API.
+
+```dart
+class DropDownClass extends StatelessWidget {
+  const DropDownClass({super.key});
 
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-            "FormFiled DropDown Example",
-          style: TextStyle(
-            color: Colors.white
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        physics: const ClampingScrollPhysics(),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              FromFiledDropDown<String>(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                controller: countryController,
-                overlayHeight: 200,
-                textController: countryTextController,
-                initialItem: selectedItem,
-                item : itemList,
-                onTap: () async{
-                  return itemList;
-                },
-
-                textStyle: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400
-                ),
-                menuDecoration: BoxDecoration(
-                    color: Colors.white,
+      body: Column(
+        children: [
+          FromFiledDropDown<String>(
+            controller: countryController,
+            textController: countryTextController,
+            initialItem: selectedItem,
+            item : itemList,
+            onTap: () async{
+              // example API, or return your API list.
+              return itemList;
+            },
+            textStyle: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w400
+            ),
+            filedDecoration: InputDecoration(
+                contentPadding: const EdgeInsets.all(10),
+                errorStyle:const TextStyle(fontSize: 12,color: Colors.red,),
+                fillColor: Colors.white,
+                hintStyle: TextStyle(color: Colors.grey.shade800),
+                filled: true,
+                focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(4),
-                    border: Border.all(
+                    borderSide:  const BorderSide(
                         color: Colors.blueAccent
                     )
                 ),
-                filedDecoration: InputDecoration(
-                    suffixIcon: IntrinsicWidth(
-                      child: Row(
-                        children: [
-                          if(countryTextController.text.isNotEmpty)
-                            InkWell(
-                              onTap:() {
-                                setState(() {
-                                  selectedItem = null;
-                                  countryTextController.clear();
-                                });
-                              },
-                              child: const Icon(
-                                Icons.clear,
-                                size: 20,
-                              ),
-                            ),
-
-                          if(countryTextController.text.isNotEmpty)
-                            const SizedBox(width: 5),
-                          const Icon(
-                            Icons.arrow_drop_down_sharp,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 8),
-
-                        ],
-                      ),
-                    ),
-                    contentPadding: const EdgeInsets.all(10),
-                    errorStyle:const TextStyle(fontSize: 12,color: Colors.red,),
-                    fillColor: Colors.white,
-                    hintStyle: TextStyle(color: Colors.grey.shade800),
-                    filled: true,
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(4),
-                        borderSide:  const BorderSide(
-                            color: Colors.blueAccent
-                        )
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(4),
-                        borderSide: const BorderSide(
-                            color: Colors.blueAccent
-                        )
-                    ),
-                    errorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(4),
-                        borderSide: const BorderSide(
-                            color: Colors.red
-                        )
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(4),
-                        borderSide: const BorderSide(
-                            color: Colors.red
-                        )
+                enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: const BorderSide(
+                        color: Colors.blueAccent
                     )
                 ),
-                onChanged: (String? value) {
-                  setState(() {
-                    selectedItem = value;
-                  });
-                },
-                onSearch: (value) async {
-                  return itemList.where((element) {
-                    return element.contains(value.toLowerCase());
-                  }).toList();
-                },
-                listItemBuilder: (context, item, isSelected, onItemSelect) {
-                  int index = itemList.indexOf(item);
-                  return Container(
-                    padding:const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                    margin: EdgeInsets.fromLTRB(5, index == 0 ? 7:2,5,1),
-                    decoration: BoxDecoration(
-                        color: isSelected ? Colors.green : Colors.transparent,
-                        borderRadius: BorderRadius.circular(2)
-                    ),
-                    child: Text(
-                      item,
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: isSelected ? Colors.white : Colors.black,
-                          fontWeight: FontWeight.w400
-                      ),
-                    ),
-                  );
-                },
-                selectedItemBuilder: (context, {item}) {
-                  return Text(
-                    item!,
-                    style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 20),
-            ],
+                errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: const BorderSide(
+                        color: Colors.red
+                    )
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    borderSide: const BorderSide(
+                        color: Colors.red
+                    )
+                )
+            ),
+            onChanged: (String? value) {},
+            onSearch: (value) async {
+              // We can call your API and search from it. Also, I can implement local search in your static list.
+              return itemList.where((element) {
+                return element.contains(value.toLowerCase());
+              }).toList();
+            },
+            listItemBuilder: (context, item, isSelected, onItemSelect) {
+              return Text(
+                item,
+                style: TextStyle(
+                    fontSize: 12,
+                    color: isSelected ? Colors.white : Colors.black,
+                    fontWeight: FontWeight.w400
+                ),
+              );
+            },
           ),
-        ),
+        ],
       ),
     );
   }
 }
+```
+
+## Properties
+
+| Property              | Type                         | Description                                              |
+|-----------------------|------------------------------|----------------------------------------------------------|
+| `item`                | `List<T>?`                  | List of dropdown items to display.                      |
+| `filedReadOnly`       | `bool`                      | Makes `TextFormField` readonly.                         |
+| `readOnly`            | `bool`                      | Makes dropdown readonly.                                |
+| `initialItem`         | `T?`                        | Initial value for the dropdown.                         |
+| `isApiLoading`        | `bool`                      | Indicates if the API is loading.                        |
+| `showCursor`          | `bool?`                     | Toggles the cursor visibility.                          |
+| `cursorColor`         | `Color?`                    | Changes the cursor color.                               |
+| `cursorHeight`        | `double?`                   | Sets the cursor height.                                 |
+| `cursorWidth`         | `double?`                   | Sets the cursor width.                                  |
+| `cursorRadius`        | `Radius?`                   | Sets the cursor border radius.                          |
+| `cursorErrorColor`    | `Color?`                    | Sets the cursor error color.                            |
+| `textStyle`           | `TextStyle`                 | Styles the search or selected text.                    |
+| `loaderWidget`        | `Widget?`                   | Custom widget to show during API loading.               |
+| `focusNode`           | `FocusNode?`                | Manages focus for searchable dropdowns.                 |
+| `errorMessage`        | `Text?`                     | Custom error message when no items are found.           |
+| `overlayHeight`       | `double?`                   | Height of the dropdown overlay.                         |
+| `addButton`           | `Widget?`                   | Adds a custom button for additional functionality.      |
+| `textController`      | `TextEditingController`     | Controller for the `TextFormField`.                     |
+| `onChanged`           | `Function(T? value)`        | Callback triggered when an item is selected.            |
+| `menuDecoration`      | `BoxDecoration?`            | Custom decoration for the dropdown menu.                |
+| `filedDecoration`     | `InputDecoration`           | Decoration for the `TextFormField`.                     |
+| `onTap`               | `Future<List<T>> Function()`| Loads items dynamically for the dropdown.               |
+| `autovalidateMode`    | `AutovalidateMode?`         | Enables validation listener when items change.          |
+| `controller`          | `OverlayPortalController`   | Controls dropdown visibility programmatically.          |
+| `listItemBuilder`     | `ListItemBuilder<T>`        | Custom builder for dropdown items.                     |
+| `selectedItemBuilder` | `SelectedItemBuilder<T?>?`  | Custom builder for the selected item.                  |
+| `onSearch`            | `Future<List<T>> Function(String)` | Callback for API-based search functionality.    |
+| `listPadding`         | `EdgeInsets?`              | Sets padding for the list view.                        |
+| `menuMargin`          | `EdgeInsets?`              | Sets margin for the dropdown item container.           |
+| `canShowButton`       | `bool`                      | Toggles the visibility of the add button.               |
+| `textAlign`           | `TextAlign`                 | Aligns the text in the search field.                    |
+| `keyboardType`        | `TextInputType?`            | Sets the input type for the `TextFormField`.            |
+| `maxLine`             | `int?`                      | Limits the maximum number of text lines.                |
+| `maxLength`           | `int?`                      | Limits the maximum number of characters.                |
+| `inputFormatters`     | `List<TextInputFormatter>?` | Applies input formatting rules to the `TextFormField`.  |
+| `validator`           | `String? Function(String?)` | Validates the dropdown value.                          |
