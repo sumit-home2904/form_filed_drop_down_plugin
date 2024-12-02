@@ -1,12 +1,12 @@
-name: from_filed_drop_down
+name: form_filed_drop_down
 description: A customizable dropdown widget for Flutter with advanced styling, search functionality, and dynamic data handling.
-homepage: https://github.com/sumit-home2904/from_filed_drop_down_plugin/tree/main/example
-repository: https://github.com/sumit-home2904/from_filed_drop_down_plugin/
-issue_tracker: https://github.com/sumit-home2904/from_filed_drop_down_plugin/issues
+homepage: https://github.com/sumit-home2904/form_filed_drop_down_plugin/tree/main/example
+repository: https://github.com/sumit-home2904/form_filed_drop_down_plugin/
+issue_tracker: https://github.com/sumit-home2904/form_filed_drop_down_plugin/issues
 Publisher: Sumit Sharma
 license: MIT
 
-version: 1.1.3
+version: 1.1.4
 
 environment:
   sdk: ^3.5.3

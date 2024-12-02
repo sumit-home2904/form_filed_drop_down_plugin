@@ -1,4 +1,4 @@
-# from_filed_drop_down 🛠️
+# form_filed_drop_down 🛠️
 
 A highly customizable dropdown widget for Flutter with powerful features like search, API integration, 
 custom UI support, and validation.
@@ -22,12 +22,12 @@ custom UI support, and validation.
 
 ```yaml
 dependencies:
-  from_filed_drop_down: latest_version
+  form_filed_drop_down: latest_version
 ```
 
 2.Import the package and use it in your Flutter App.
 ```dart
-import 'package:animated_custom_dropdown/custom_dropdown.dart';
+import 'package:from_filed_drop_down/form_filed_drop_down.dart';
 ```
 
 ## Example usage

@@ -28,8 +28,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
-final countryController = OverlayPortalController();
-final countryTextController = TextEditingController();
+final itemController = OverlayPortalController();
+final itemTextController = TextEditingController();
 
 String? selectedItem;
 List<String> itemList = ["item","item 2","item 3","item 4","item 5","item 6"];
@@ -49,8 +49,8 @@ class DropDownClass extends StatelessWidget {
           children: [
             FormFiledDropDown<String>(
               item : itemList,
-              controller: countryController,
-              textController: countryTextController,
+              controller: itemController,
+              textController: itemTextController,
               dropdownOffset: const Offset(0, 50),
               textStyle: const TextStyle(
                   fontSize: 12,
