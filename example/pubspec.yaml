@@ -13,7 +13,7 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.8
-  from_filed_drop_down:
+  form_filed_drop_down:
     path: ../
   http: ^1.2.2
 

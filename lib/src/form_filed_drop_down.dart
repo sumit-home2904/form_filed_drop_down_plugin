@@ -12,6 +12,7 @@ class FormFiledDropDown<T> extends StatefulWidget {
   /// Use this for[TextFormField] text form fields you want to read only.
   final bool filedReadOnly;
 
+  /// call when change drop-down opening offset
   final Offset? dropdownOffset;
 
   /// Use this for [FromFieldDropDown] to read only from the dropdown you want.
