@@ -12,6 +12,7 @@ class FromFiledDropDown<T> extends StatefulWidget {
   /// Use this for[TextFormField] text form fields you want to read only.
   final bool filedReadOnly;
 
+
   /// Use this for [FromFieldDropDown] to read only from the dropdown you want.
   final bool readOnly;
 
@@ -443,7 +444,6 @@ class _FromFiledDropDownState<T> extends State<FromFiledDropDown<T>> {
             style: widget.textStyle,
             keyboardType: widget.keyboardType,
             inputFormatters: widget.inputFormatters,
-            enabled: widget.filedReadOnly,
             maxLines: widget.maxLine,
             maxLength: widget.maxLength,
             textAlign: widget.textAlign,

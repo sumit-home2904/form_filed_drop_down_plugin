@@ -1,3 +1,6 @@
+# 1.1.2
+bug fixed
+
 # 1.1.1
 initialItem selection issue,ui issue and small bug fixed 
 

@@ -43,37 +43,53 @@ class DropDownClass extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      body: Column(
-        children: [
-          FromFiledDropDown<String>(
-            item : itemList,
-            controller: countryController,
-            textController: countryTextController,
-            textStyle: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w400
-            ),
-            menuDecoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(4),
-                border: Border.all(
-                    color: Colors.blueAccent
-                )
-            ),
-            filedDecoration: const InputDecoration(),
-            onChanged: (String? value) {},
-            listItemBuilder: (context, item, isSelected, onItemSelect) {
-              return Text(
-                item,
-                style: TextStyle(
-                    fontSize: 12,
-                    color: isSelected ? Colors.white : Colors.black,
-                    fontWeight: FontWeight.w400
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            FromFiledDropDown<String>(
+              item : itemList,
+              controller: countryController,
+              textController: countryTextController,
+              textStyle: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400
+              ),
+              menuDecoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(
+                      color: Colors.blueAccent
+                  )
+              ),
+              filedDecoration: InputDecoration(
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(2),
+                    borderSide: const BorderSide(
+                        color: Colors.blueAccent
+                    )
                 ),
-              );
-            },
-          ),
-        ],
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(2),
+                  borderSide: const BorderSide(
+                      color: Colors.blueAccent
+                  )
+                ),
+              ),
+              onChanged: (String? value) {},
+              listItemBuilder: (context, item, isSelected, onItemSelect) {
+                return Text(
+                  item,
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: isSelected ? Colors.white : Colors.black,
+                      fontWeight: FontWeight.w400
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
