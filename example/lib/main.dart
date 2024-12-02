@@ -48,37 +48,6 @@ class DropDownClass extends StatelessWidget {
           FromFiledDropDown<String>(
             item : itemList,
             controller: countryController,
-            canShowButton: true,
-            addButton:  InkWell(
-              onTap: () {
-                // add your event's
-              },
-              child: Container(
-                height: 40,
-                padding: const EdgeInsets.all(10),
-                decoration:BoxDecoration(
-                  color: Colors.green,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-                child: const Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                          "Add",
-                          maxLines: 1,
-                          textAlign:TextAlign.start,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(color: Colors.white)
-                      ),
-                    ),
-                    Icon(
-                      Icons.add,
-                      color: Colors.white,
-                    )
-                  ],
-                ),
-              ),
-            ),
             textController: countryTextController,
             textStyle: const TextStyle(
                 fontSize: 12,
