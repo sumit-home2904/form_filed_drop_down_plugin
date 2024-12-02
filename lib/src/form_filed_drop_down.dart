@@ -62,7 +62,7 @@ class FormFiledDropDown<T> extends StatefulWidget {
 
   /// call when you need add button or need any kind for button functionality
   /// open a dialog navigate to other page's ect...
-  /// ```dart
+  /// dart
   /// InkWell(
   ///   onTap: () {
   ///     // add your event's
@@ -102,7 +102,7 @@ class FormFiledDropDown<T> extends StatefulWidget {
   final Function(T? value) onChanged;
 
   /// give your drop-down custom decoration style
-  /// ```dart
+  /// dart
   /// BoxDecoration(
   ///    color: Colors.white,
   ///    borderRadius: BorderRadius.circular(2),
@@ -112,7 +112,7 @@ class FormFiledDropDown<T> extends StatefulWidget {
   /// * [InputDecorator], which shows the labels and other visual elements that
   /// Creates a [TextFormField] with an [InputDecoration]
   /// ///
-  /// ```dart
+  /// dart
   /// TextFormField(
   ///   decoration: const InputDecoration(
   ///     icon: Icon(Icons.person),
@@ -132,7 +132,7 @@ class FormFiledDropDown<T> extends StatefulWidget {
   final OverlayPortalController controller;
 
   /// Build your drop-down listing custom UI using this property.
-  /// ```dart
+  /// dart
   /// listItemBuilder: (context, item, isSelected, onItemSelect) {
   ///    return Container(
   ///      decoration: BoxDecoration(
@@ -376,15 +376,25 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
           widget.textController.clear();
           if(widget.onSearch != null) widget.onSearch!("");
         }
+        // print("NEWW ITEM % $selectedItem");
+
+      }else{
+        selectedItem = widget.initialItem;
+        widget.textController.text = selectedItemConvertor(listData: selectedItem)??"";
+        // print("NEWW ITEM SEELCT% $selectedItem");
       }
 
-        // if (selectedItem != null) {
-        //   widget.textController.text = selectedItemConvertor(listData: selectedItem)!;
-        // }
+      // if (selectedItem != null) {
+      //   widget.textController.text = selectedItemConvertor(listData: selectedItem)!;
+      // }
 
-        if (widget.textController != oldWidget.textController) {
-          if (widget.onSearch != null) widget.onSearch!("");
-        }
+      if (widget.textController != oldWidget.textController) {
+        print("INSERT DROPDOWN PRINT");
+        if (widget.onSearch != null) widget.onSearch!("");
+      }else{
+        print("ELSE PART DROPDOWN PRINT");
+
+      }
     });
   }
 
@@ -577,9 +587,9 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
   /// This method is called when the user selects a drop-down value item from the list
   onItemSelected(index){
     widget.controller.hide();
-    widget.onChanged(items[index]);
     selectedItem = items[index];
     widget.textController.text = selectedItemConvertor(listData: selectedItem)??"";
+    widget.onChanged(items[index]);
     setState(() {});
   }
 
