@@ -261,6 +261,7 @@ class DropDownClass extends StatelessWidget {
 | `cursorColor`         | `Color?`                    | Changes the cursor color.                              |
 | `cursorHeight`        | `double?`                   | Sets the cursor height.                                |
 | `cursorWidth`         | `double?`                   | Sets the cursor width.                                 |
+| `errorWidgetHeight`   | `double?`                   | Sets the error widget height.                          |
 | `cursorRadius`        | `Radius?`                   | Sets the cursor border radius.                         |
 | `cursorErrorColor`    | `Color?`                    | Sets the cursor error color.                           |
 | `textStyle`           | `TextStyle`                 | Styles the search or selected text.                    |

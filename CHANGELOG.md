@@ -1,3 +1,6 @@
+# 1.1.7
+bug fixed
+
 # 1.1.6
 bug fixed
 

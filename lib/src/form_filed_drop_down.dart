@@ -14,6 +14,7 @@ class FormFiledDropDown<T> extends StatefulWidget {
 
   /// call when change drop-down opening offset
   final Offset? dropdownOffset;
+  final double? errorWidgetHeight;
 
   /// Use this for [FromFieldDropDown] to read only from the dropdown you want.
   final bool readOnly;
@@ -232,6 +233,7 @@ class FormFiledDropDown<T> extends StatefulWidget {
     this.inputFormatters,
     this.cursorErrorColor,
     this.readOnly = false,
+    this.errorWidgetHeight = 120,
     this.autovalidateMode,
     required this.textStyle,
     required this.onChanged,
@@ -376,13 +378,15 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
           widget.onChanged(null);
           widget.textController.clear();
           if(widget.onSearch != null) widget.onSearch!("");
+        }else{
+          selectedItem = widget.initialItem;
+          // if(widget.textController != oldWidget.textController) {
+          //   widget.textController.text = selectedItemConvertor(listData: selectedItem)??"";
+          // }
+          // print("NEWW ITEM SEELCT% $selectedItem");
         }
         // print("NEWW ITEM % $selectedItem");
 
-      }else{
-        selectedItem = widget.initialItem;
-        widget.textController.text = selectedItemConvertor(listData: selectedItem)??"";
-        // print("NEWW ITEM SEELCT% $selectedItem");
       }
 
       // if (selectedItem != null) {
@@ -390,10 +394,10 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
       // }
 
       if (widget.textController != oldWidget.textController) {
-        print("INSERT DROPDOWN PRINT");
+        // print("INSERT DROPDOWN PRINT");
         if (widget.onSearch != null) widget.onSearch!("");
       }else{
-        print("ELSE PART DROPDOWN PRINT");
+        // print("ELSE PART DROPDOWN PRINT");
 
       }
     });
@@ -559,8 +563,8 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
                     hoverColor: Colors.transparent,
                     onTap: ()=> onItemSelected(index),
                     child: widget.listItemBuilder(
-                        context,
-                        items[index], selected,
+                      context,
+                      items[index], selected,
                     ),
                   );
                 },
@@ -602,7 +606,7 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
     return Container(
       alignment: Alignment.center,
       decoration: menuDecoration(),
-      height: 120,
+      height: widget.errorWidgetHeight,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
