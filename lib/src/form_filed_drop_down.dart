@@ -233,7 +233,7 @@ class FormFiledDropDown<T> extends StatefulWidget {
     this.inputFormatters,
     this.cursorErrorColor,
     this.readOnly = false,
-    this.errorWidgetHeight = 120,
+    this.errorWidgetHeight,
     this.autovalidateMode,
     required this.textStyle,
     required this.onChanged,
@@ -606,7 +606,7 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
     return Container(
       alignment: Alignment.center,
       decoration: menuDecoration(),
-      height: widget.errorWidgetHeight,
+      height: widget.errorWidgetHeight??120,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
