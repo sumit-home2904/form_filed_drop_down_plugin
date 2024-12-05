@@ -6,5 +6,5 @@ typedef ListItemBuilder<T> = Widget Function(
 );
 
 typedef SelectedItemBuilder<T> = Text Function(
-    BuildContext context, {T? item}
+    BuildContext context, T item
 );

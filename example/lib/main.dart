@@ -46,9 +46,13 @@ class DropDownClass extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
+            SizedBox(height: MediaQuery.sizeOf(context).height * 0.9),
             FormFiledDropDown<String>(
               item : itemList,
+              errorWidgetHeight: 120,
+              overlayHeight: 100,
               controller: itemController,
               textController: itemTextController,
               dropdownOffset: const Offset(0, 50),
@@ -56,6 +60,7 @@ class DropDownClass extends StatelessWidget {
                   fontSize: 12,
                   fontWeight: FontWeight.w400
               ),
+              onTap: () async => itemList,
               menuDecoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(4),
@@ -77,16 +82,28 @@ class DropDownClass extends StatelessWidget {
                   )
                 ),
               ),
+              onSearch: (value) async{
+                return itemList.where((element) {
+                  return element.contains(value);
+                }).toList();
+              },
               onChanged: (String? value) {},
+              listPadding: const EdgeInsets.symmetric(horizontal: 10,vertical: 5),
               listItemBuilder: (context, item, isSelected) {
-                return Text(
-                  item,
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: isSelected ? Colors.white : Colors.black,
-                      fontWeight: FontWeight.w400
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text(
+                    item,
+                    style: const TextStyle(
+                        fontSize: 12,
+                        color:  Colors.black,
+                        fontWeight: FontWeight.w400
+                    ),
                   ),
                 );
+              },
+              selectedItemBuilder: (context, item) {
+                return Text(item);
               },
             ),
           ],
