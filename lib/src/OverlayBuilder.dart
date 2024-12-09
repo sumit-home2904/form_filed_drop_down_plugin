@@ -81,6 +81,11 @@ class OverlayBuilder<T> extends StatefulWidget {
 
 class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
 
+  final List<GlobalKey> _itemKeys = [];
+  final GlobalKey addButtonKey = GlobalKey();
+
+  double totalHeight = 0.0;
+
   T? selectedItem;
   bool displayOverlayBottom = true;
   final GlobalKey textFieldKey = GlobalKey();
@@ -88,18 +93,26 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
 
   /// calculate drop-down height base on item length
   double baseOnHeightCalculate() {
-    const double itemHeight = 35.0;
+    final context = addButtonKey.currentContext;
+    double addButtonHeight = 0;
+
+    /// calculate add button button height bass on user widget
+    if (context != null) {
+      final renderBox = context.findRenderObject() as RenderBox?;
+        addButtonHeight = renderBox?.size.height ?? 0.0;
+        print("addButtonHeight $addButtonHeight");
+    }
 
     if (widget.canShowButton) {
       if(widget.item.isNotEmpty) {
-        return widget.item.length * itemHeight + 40;
+        return calculateTotalHeight() + addButtonHeight;
       }else {
-        return widget.errorWidgetHeight??120;
+        return widget.errorWidgetHeight??(addButtonHeight + 40);
       }
     }
 
-    if(widget.item.isNotEmpty) return widget.item.length * (widget.item.length == 1 ? 38 : itemHeight);
-    return widget.errorWidgetHeight??120;
+    if(widget.item.isNotEmpty) return calculateTotalHeight() + 10;
+    return widget.errorWidgetHeight??(addButtonHeight + 20);
   }
 
 
@@ -112,22 +125,36 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
     // If widget.overlayHeight is not provided, use staticHeight
     final double maxHeight = widget.overlayHeight ?? staticHeight;
 
+    print(calculatedHeight > maxHeight ? maxHeight : calculatedHeight);
     // Return the smaller value between the calculated height and maxHeight
     return calculatedHeight > maxHeight ? maxHeight : calculatedHeight;
   }
 
 
+  /// calculate list each item height
+  double calculateTotalHeight() {
+    double value = _itemKeys.fold(0.0, (sum, key) {
+      final context = key.currentContext;
+      if (context != null) {
+        final renderBox = context.findRenderObject() as RenderBox?;
+        return sum + (renderBox?.size.height ?? 40);
+      }
+      return sum == 0 ? 28 : sum  ;
+    });
+    return value;
+  }
 
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      selectedItem = widget.initialItem;
       checkRenderObjects(); // Start checking render objects.
     });
   }
 
-
+  /// use for move up and down when not scroll available
   void checkRenderObjects() {
     if (key1.currentContext != null && key2.currentContext != null) {
       final RenderBox? render1 = key1.currentContext
@@ -151,35 +178,49 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
 
 
   @override
+  void didUpdateWidget(covariant OverlayBuilder<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if(widget.item != oldWidget.item){
+    }
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     return CompositedTransformFollower(
         link: widget.layerLink,
         offset: setOffset(),
         followerAnchor: displayOverlayBottom ? Alignment.topLeft : Alignment.bottomLeft,
-        child: SizedBox(
-          key: key1,
-          width: widget.renderBox?.size.width ?? 0,
-          height: calculateHeight(),
-          child: AnimatedSection(
-            animationDismissed: widget.controller.hide,
-            expand: true,
-            axisAlignment: displayOverlayBottom ? 1.0 : -1.0,
-            child: Container(
-                margin: widget.menuMargin ?? EdgeInsets.zero,
-                width: MediaQuery.sizeOf(context).width,
-                key: key2,
-                height: calculateHeight(),
-                child: widget.isApiLoading
-                    ?
-                loaderWidget()
-                    :
-                (widget.item).isEmpty
-                    ?
-                emptyErrorWidget()
-                    :
-                uiListWidget()
-            ),
-          ),
+        child: LayoutBuilder(
+          builder: (context,c) {
+            _itemKeys.addAll(List.generate(widget.item.length, (_) => GlobalKey()));
+
+            return SizedBox(
+              key: key1,
+              width: widget.renderBox?.size.width ?? c.maxWidth,
+              height: calculateHeight(),
+              child: AnimatedSection(
+                animationDismissed: widget.controller.hide,
+                expand: true,
+                axisAlignment: displayOverlayBottom ? 1.0 : -1.0,
+                child: Container(
+                    margin: widget.menuMargin ?? EdgeInsets.zero,
+                    width: MediaQuery.sizeOf(context).width,
+                    key: key2,
+                    height: calculateHeight(),
+                    child: widget.isApiLoading
+                        ?
+                    loaderWidget()
+                        :
+                    (widget.item).isEmpty
+                        ?
+                    emptyErrorWidget()
+                        :
+                    uiListWidget()
+                ),
+              ),
+            );
+          }
         )
     );
   }
@@ -200,7 +241,10 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
         child: Column(
           children: [
             if(widget.canShowButton)
-              widget.addButton??SizedBox(),
+              SizedBox(
+                  key: addButtonKey,
+                  child: widget.addButton??SizedBox(key: addButtonKey)
+              ),
             const SizedBox(height:2),
             Expanded(
               child: ListView.builder(
@@ -213,7 +257,7 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
                 itemBuilder: (_, index) {
                   bool selected = isItemSelected(index);
                   return InkWell(
-                    hoverColor: Colors.transparent,
+                    key: _itemKeys[index],
                     onTap: ()=> onItemSelected(index),
                     child: widget.listItemBuilder(
                       context,
@@ -236,8 +280,8 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
   /// drop-down, or that kind of data will be available in your list; otherwise,
   /// you will encounter an error.
   bool isItemSelected(int index){
-    String? selectedValue = (selectedItemConvertor(listData: selectedItem) ?? "");
-    String? selectedIndexValue = selectedItemConvertor(listData: widget.item[index]);
+    String? selectedValue = (selectedItemConvertor(selectedItem) ?? "");
+    String? selectedIndexValue = selectedItemConvertor(widget.item[index]);
     return selectedIndexValue == selectedValue;
   }
 
@@ -265,12 +309,12 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
   onItemSelected(index){
     widget.controller.hide();
     selectedItem = widget.item[index];
-    widget.textController.text = selectedItemConvertor(listData: selectedItem)??"";
+    widget.textController.text = selectedItemConvertor(selectedItem)??"";
     widget.onChanged(widget.item[index]);
     setState(() {});
   }
 
-  String? selectedItemConvertor({T? listData}) {
+  String? selectedItemConvertor(T? listData) {
     if (listData != null) {
       return (widget.selectedItemBuilder(context, listData as T)).data;
     }
@@ -281,18 +325,21 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
   /// empty or the search value is not found, helping them understand what
   /// is happening in the UI. Additionally, the user can enter their custom message as well.
   Widget emptyErrorWidget(){
-    print(widget.errorWidgetHeight);
     return Container(
-      alignment: Alignment.center,
       decoration: menuDecoration(),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           if(widget.canShowButton)
-            widget.addButton??SizedBox(),
-
+            SizedBox(
+              key: addButtonKey,
+                child: widget.addButton??SizedBox(key: addButtonKey,)
+            ),
+          Spacer(),
           widget.errorMessage ?? const Text("No options"),
+          Spacer(),
+
         ],
       ),
     );

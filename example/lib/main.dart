@@ -149,6 +149,27 @@ class _DropDownClassState extends State<DropDownClass> {
                     Expanded(
                         child: FormFiledDropDown<CountryModel>(
                           focusNode: focusNode,
+                          canShowButton: true,
+                          addButton: InkWell(
+                            onTap: (){},
+                            child: Container(
+                              height: 40,
+                              color: Colors.green,
+                              child: const Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                        "Add", maxLines: 1,
+                                        textAlign:TextAlign. start,
+                                        overflow: TextOverflow. ellipsis,
+                                        style: TextStyle(color: Colors. white)
+                                    ),
+                                  ),
+                                  Icon( Icons. add, color: Colors. white, )
+                                ],
+                              ),
+                            ),
+                          ),
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           controller: countryController,
                           textController: countryTextController,
@@ -282,6 +303,23 @@ class _DropDownClassState extends State<DropDownClass> {
                     Expanded(
                         child: FormFiledDropDown<StatesModel>(
                           focusNode: focusNode2,
+                          canShowButton: true,
+                          addButton: InkWell(
+                            onTap: (){},
+                            child: const Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                      "Add", maxLines: 1,
+                                      textAlign:TextAlign. start,
+                                      overflow: TextOverflow. ellipsis,
+                                      style: TextStyle(color: Colors. white)
+                                ),
+                                ),
+                                Icon( Icons. add, color: Colors. white, )
+                              ],
+                            ),
+                          ),
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           controller: stateController,
                           textController: stateTextController,
@@ -377,6 +415,7 @@ class _DropDownClassState extends State<DropDownClass> {
                             }).toList();
                           },
                           listItemBuilder: (context, item, isSelected) {
+                            // print("isSelected $isSelected");
                             int index = statesList.indexOf(item);
                             return Container(
                               padding:const EdgeInsets.symmetric(horizontal: 5, vertical: 5),

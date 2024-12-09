@@ -1,3 +1,6 @@
+# 2.1.0
+bug fixed 
+
 # 2.0.0
 bug fixed and when we don't have scroll then move drop-down up added
 

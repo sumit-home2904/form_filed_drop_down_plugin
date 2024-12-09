@@ -279,33 +279,6 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
   }
 
 
-  void checkRenderObjects() {
-    print(" r345346 ");
-    Future.delayed(const Duration(milliseconds: 100), () {
-      if (key1.currentContext != null && key2.currentContext != null) {
-        print("object qwew");
-        final RenderBox? render1 = key1.currentContext?.findRenderObject() as RenderBox?;
-        final RenderBox? render2 = key2.currentContext?.findRenderObject() as RenderBox?;
-
-        if (render1 != null && render2 != null) {
-          final screenHeight = MediaQuery.of(context).size.height;
-          double y = render1.localToGlobal(Offset.zero).dy;
-
-          if (screenHeight - y < render2.size.height) {
-            displayOverlayBottom = false;
-          }
-
-          setState(() {}); // Update the state after calculation.
-        }
-      } else {
-        print("objectadssd ");
-        // Try again if render objects are not ready.
-        checkRenderObjects();
-      }
-    });
-  }
-
-
   String? selectedItemConvertor({T? listData}) {
     if (listData != null) {
       return (widget.selectedItemBuilder(context, listData as T)).data;
@@ -318,16 +291,14 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
   @override
   void didUpdateWidget(covariant FormFiledDropDown<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // checkRenderObjects();
+
     if (widget.item != oldWidget.item) {
-      print("FormFiledDropDown item change");
       WidgetsBinding.instance.addPostFrameCallback((_) {
         items = widget.item;
       });
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-
       if(widget.initialItem != oldWidget.initialItem){
         if(widget.initialItem == null){
           selectedItem = null;
@@ -336,25 +307,7 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
           if(widget.onSearch != null) widget.onSearch!("");
         }else{
           selectedItem = widget.initialItem;
-          // if(widget.textController != oldWidget.textController) {
-          //   widget.textController.text = selectedItemConvertor(listData: selectedItem)??"";
-          // }
-          // print("NEWW ITEM SEELCT% $selectedItem");
         }
-        // print("NEWW ITEM % $selectedItem");
-
-      }
-
-      // if (selectedItem != null) {
-      //   widget.textController.text = selectedItemConvertor(listData: selectedItem)!;
-      // }
-
-      if (widget.textController != oldWidget.textController) {
-        // print("INSERT DROPDOWN PRINT");
-        // if (widget.onSearch != null) widget.onSearch!("");
-      }else{
-        // print("ELSE PART DROPDOWN PRINT");
-
       }
     });
   }
