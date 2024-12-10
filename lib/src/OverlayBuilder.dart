@@ -3,56 +3,38 @@ import 'package:form_filed_drop_down/src/animated_section.dart';
 import 'package:form_filed_drop_down/src/signatures.dart';
 
 class OverlayBuilder<T> extends StatefulWidget {
+  final layerLink;
   final List<T> item;
-  final bool filedReadOnly;
-
-  final Offset? dropdownOffset;
-  final double? errorWidgetHeight;
-
   final T? initialItem;
   final bool isApiLoading;
-
-
+  final Widget? addButton;
+  final bool filedReadOnly;
+  final Text? errorMessage;
+  final bool canShowButton;
+  final TextStyle textStyle;
   final Radius? cursorRadius;
   final RenderBox? renderBox;
-
-  final Color? cursorErrorColor;
-  final layerLink;
-
-
-  final TextStyle textStyle;
   final Widget? loaderWidget;
-
-
-  final Text? errorMessage;
   final double? overlayHeight;
-  final Widget? addButton;
-
-  final TextEditingController textController;
-
-  final Function(T? value) onChanged;
-
-  final BoxDecoration? menuDecoration;
-
-  final OverlayPortalController controller;
-
-  final ListItemBuilder<T> listItemBuilder;
-
-  final SelectedItemBuilder<T> selectedItemBuilder;
-
-  final EdgeInsets? listPadding;
-
+  final Offset? dropdownOffset;
   final EdgeInsets? menuMargin;
-
-  final bool canShowButton;
+  final Color? cursorErrorColor;
+  final EdgeInsets? listPadding;
+  final double? errorWidgetHeight;
+  final Function(T? value) onChanged;
+  final BoxDecoration? menuDecoration;
+  final OverlayPortalController controller;
+  final ListItemBuilder<T> listItemBuilder;
+  final TextEditingController textController;
+  final SelectedItemBuilder<T> selectedItemBuilder;
 
 
   const OverlayBuilder({
     super.key,
+    this.renderBox,
     this.addButton,
     this.menuMargin,
     this.listPadding,
-    this.renderBox,
     this.initialItem,
     this.cursorRadius,
     this.loaderWidget,
@@ -67,12 +49,12 @@ class OverlayBuilder<T> extends StatefulWidget {
     required this.layerLink,
     required this.onChanged,
     required this.controller,
-    required this.selectedItemBuilder,
     this.isApiLoading = false,
     this.filedReadOnly = false,
     this.canShowButton = false,
     required this.textController,
     required this.listItemBuilder,
+    required this.selectedItemBuilder,
   });
 
   @override
@@ -81,39 +63,58 @@ class OverlayBuilder<T> extends StatefulWidget {
 
 class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
 
-  final List<GlobalKey> _itemKeys = [];
-  final GlobalKey addButtonKey = GlobalKey();
-
-  double totalHeight = 0.0;
-
   T? selectedItem;
   bool displayOverlayBottom = true;
-  final GlobalKey textFieldKey = GlobalKey();
+
+  final GlobalKey itemListKey = GlobalKey();
+  final GlobalKey addButtonKey = GlobalKey();
   final key1 = GlobalKey(), key2 = GlobalKey();
 
   /// calculate drop-down height base on item length
   double baseOnHeightCalculate() {
     final context = addButtonKey.currentContext;
+    final itemKeyContext = itemListKey.currentContext;
     double addButtonHeight = 0;
+    double itemHeight = 40; // Default height
 
-    /// calculate add button button height bass on user widget
+    // Calculate add button height
     if (context != null) {
       final renderBox = context.findRenderObject() as RenderBox?;
-        addButtonHeight = renderBox?.size.height ?? 0.0;
-        print("addButtonHeight $addButtonHeight");
+      addButtonHeight = renderBox?.size.height ?? 0.0;
+      //print("addButtonHeight $addButtonHeight");
+    }
+
+    // Calculate item height
+    if (itemKeyContext != null) {
+      final renderBox = itemKeyContext.findRenderObject() as RenderBox?;
+      itemHeight = renderBox?.size.height ?? 40; // Default to 40
+      //print("itemHeight $itemHeight");
     }
 
     if (widget.canShowButton) {
-      if(widget.item.isNotEmpty) {
-        return calculateTotalHeight() + addButtonHeight;
-      }else {
-        return widget.errorWidgetHeight??(addButtonHeight + 40);
+      if (widget.item.isNotEmpty) {
+        //print("Button shown, items not empty");
+        //print(widget.item.length * itemHeight);
+        return widget.item.length * itemHeight + addButtonHeight;
+      } else {
+        //print("Button shown, items empty");
+        return widget.errorWidgetHeight ?? (addButtonHeight + 40);
+      }
+    } else {
+      if (widget.item.isNotEmpty) {
+        //print("Button hidden, items not empty");
+        return widget.item.length * itemHeight + 10;
+      }
+      if (widget.isApiLoading) {
+        //print("Button hidden, API loading");
+        return 150; // Default loading height
+      } else {
+        //print("Button hidden, items empty");
+        return widget.errorWidgetHeight ?? (addButtonHeight + 40);
       }
     }
-
-    if(widget.item.isNotEmpty) return calculateTotalHeight() + 10;
-    return widget.errorWidgetHeight??(addButtonHeight + 20);
   }
+
 
 
   /// The height of the drop-down container is calculated based on the item length or
@@ -122,26 +123,13 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
     const double staticHeight = 150.0; // Static value fallback
     final double calculatedHeight = baseOnHeightCalculate();
 
+    //print(calculatedHeight);
     // If widget.overlayHeight is not provided, use staticHeight
     final double maxHeight = widget.overlayHeight ?? staticHeight;
 
-    print(calculatedHeight > maxHeight ? maxHeight : calculatedHeight);
+    //print(calculatedHeight > maxHeight ? maxHeight : calculatedHeight);
     // Return the smaller value between the calculated height and maxHeight
     return calculatedHeight > maxHeight ? maxHeight : calculatedHeight;
-  }
-
-
-  /// calculate list each item height
-  double calculateTotalHeight() {
-    double value = _itemKeys.fold(0.0, (sum, key) {
-      final context = key.currentContext;
-      if (context != null) {
-        final renderBox = context.findRenderObject() as RenderBox?;
-        return sum + (renderBox?.size.height ?? 40);
-      }
-      return sum == 0 ? 28 : sum  ;
-    });
-    return value;
   }
 
 
@@ -180,7 +168,15 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
   @override
   void didUpdateWidget(covariant OverlayBuilder<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if(widget.item != oldWidget.item){
+
+    // Check if the item list or its length has changed
+    if (oldWidget.item != widget.item || oldWidget.item.length != widget.item.length) {
+      // Trigger a recalculation and rebuild
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          baseOnHeightCalculate();
+        });
+      });
     }
   }
 
@@ -193,21 +189,19 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
         followerAnchor: displayOverlayBottom ? Alignment.topLeft : Alignment.bottomLeft,
         child: LayoutBuilder(
           builder: (context,c) {
-            _itemKeys.addAll(List.generate(widget.item.length, (_) => GlobalKey()));
-
             return SizedBox(
               key: key1,
+              height: calculateHeight()+4,
               width: widget.renderBox?.size.width ?? c.maxWidth,
-              height: calculateHeight(),
               child: AnimatedSection(
-                animationDismissed: widget.controller.hide,
                 expand: true,
+                animationDismissed: widget.controller.hide,
                 axisAlignment: displayOverlayBottom ? 1.0 : -1.0,
                 child: Container(
-                    margin: widget.menuMargin ?? EdgeInsets.zero,
-                    width: MediaQuery.sizeOf(context).width,
                     key: key2,
-                    height: calculateHeight(),
+                    height: calculateHeight()+4,
+                    width: MediaQuery.sizeOf(context).width,
+                    margin: widget.menuMargin ?? EdgeInsets.zero,
                     child: widget.isApiLoading
                         ?
                     loaderWidget()
@@ -257,7 +251,7 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
                 itemBuilder: (_, index) {
                   bool selected = isItemSelected(index);
                   return InkWell(
-                    key: _itemKeys[index],
+                    key: index == 0 ? itemListKey : null,
                     onTap: ()=> onItemSelected(index),
                     child: widget.listItemBuilder(
                       context,
@@ -326,6 +320,7 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
   /// is happening in the UI. Additionally, the user can enter their custom message as well.
   Widget emptyErrorWidget(){
     return Container(
+      key: addButtonKey,
       decoration: menuDecoration(),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -333,8 +328,7 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
         children: [
           if(widget.canShowButton)
             SizedBox(
-              key: addButtonKey,
-                child: widget.addButton??SizedBox(key: addButtonKey,)
+                child: widget.addButton??SizedBox()
             ),
           Spacer(),
           widget.errorMessage ?? const Text("No options"),

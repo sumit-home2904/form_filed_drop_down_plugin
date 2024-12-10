@@ -1,3 +1,6 @@
+# 2.2.0
+issue fixed fixed 
+
 # 2.1.0
 bug fixed 
 

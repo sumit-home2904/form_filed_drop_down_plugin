@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'OverlayBuilder.dart';
@@ -254,7 +255,7 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
   bool displayOverlayBottom = true;
   final GlobalKey textFieldKey = GlobalKey();
   final key1 = GlobalKey(), key2 = GlobalKey();
-
+  bool isTypingDisabled = false;
 
   @override
   void initState() {
@@ -277,7 +278,6 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
       selectedItem = widget.initialItem;
     });
   }
-
 
   String? selectedItemConvertor({T? listData}) {
     if (listData != null) {
@@ -318,17 +318,16 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
     return OverlayPortal(
       controller: widget.controller,
       overlayChildBuilder: (context) {
-
         final RenderBox? renderBox =
         textFieldKey.currentContext?.findRenderObject() as RenderBox?;
         return GestureDetector(
           onTap: () {
-            if(selectedItem == null) {
+            if (selectedItem == null) {
               widget.textController.clear();
-              if(widget.onSearch != null) {
+              if (widget.onSearch != null) {
                 widget.onSearch!("");
               }
-            };
+            }
             widget.controller.hide();
           },
           child: Container(
@@ -368,18 +367,33 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
       },
       child: CompositedTransformTarget(
         link: layerLink,
-        child: TextFormField(
+        child: Listener(
+          onPointerDown: (PointerDownEvent event) {
+            if (event.buttons == kSecondaryMouseButton) {
+              // Disable typing on secondary mouse button press
+              setState(() {
+                isTypingDisabled = true;
+              });
+            } else {
+              setState(() {
+                isTypingDisabled = false;
+              });
+            }
+
+            print(isTypingDisabled);
+          },
+          child: TextFormField(
             key: textFieldKey,
             style: widget.textStyle,
             keyboardType: widget.keyboardType,
             inputFormatters: widget.inputFormatters,
             textAlign: widget.textAlign,
-            readOnly: widget.filedReadOnly,
+            readOnly: isTypingDisabled ?  true : widget.filedReadOnly,
             focusNode: widget.focusNode,
             controller: widget.textController,
             showCursor: widget.showCursor,
             cursorHeight: widget.cursorHeight,
-            cursorWidth: widget.cursorWidth??2.0,
+            cursorWidth: widget.cursorWidth ?? 2.0,
             cursorRadius: widget.cursorRadius,
             decoration: widget.filedDecoration,
             cursorColor: widget.cursorColor ?? Colors.black,
@@ -387,15 +401,18 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
             autovalidateMode: widget.autovalidateMode,
             validator: widget.validator,
             onChanged: onChange,
-            onTap:textFiledOnTap
+            onTap: textFiledOnTap,
+          ),
         ),
       ),
     );
   }
 
 
+
   /// drop-down on tap function
   textFiledOnTap()async {
+    print("object textFiledOnTap");
     if(!(widget.readOnly)) {
       widget.controller.show();
       if (widget.onTap != null){
