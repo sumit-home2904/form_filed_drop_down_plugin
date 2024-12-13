@@ -380,7 +380,6 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
               });
             }
 
-            print(isTypingDisabled);
           },
           child: TextFormField(
             key: textFieldKey,
@@ -412,7 +411,6 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
 
   /// drop-down on tap function
   textFiledOnTap()async {
-    print("object textFiledOnTap");
     if(!(widget.readOnly)) {
       widget.controller.show();
       if (widget.onTap != null){

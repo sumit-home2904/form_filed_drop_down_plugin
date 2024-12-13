@@ -1,4 +1,4 @@
-# 2.2.0
+# 2.2.1
 issue fixed fixed 
 
 # 2.1.0

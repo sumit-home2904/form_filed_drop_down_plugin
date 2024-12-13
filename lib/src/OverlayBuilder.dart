@@ -81,35 +81,27 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
     if (context != null) {
       final renderBox = context.findRenderObject() as RenderBox?;
       addButtonHeight = renderBox?.size.height ?? 0.0;
-      //print("addButtonHeight $addButtonHeight");
     }
 
     // Calculate item height
     if (itemKeyContext != null) {
       final renderBox = itemKeyContext.findRenderObject() as RenderBox?;
       itemHeight = renderBox?.size.height ?? 40; // Default to 40
-      //print("itemHeight $itemHeight");
     }
 
     if (widget.canShowButton) {
       if (widget.item.isNotEmpty) {
-        //print("Button shown, items not empty");
-        //print(widget.item.length * itemHeight);
         return widget.item.length * itemHeight + addButtonHeight;
       } else {
-        //print("Button shown, items empty");
         return widget.errorWidgetHeight ?? (addButtonHeight + 40);
       }
     } else {
       if (widget.item.isNotEmpty) {
-        //print("Button hidden, items not empty");
         return widget.item.length * itemHeight + 10;
       }
       if (widget.isApiLoading) {
-        //print("Button hidden, API loading");
         return 150; // Default loading height
       } else {
-        //print("Button hidden, items empty");
         return widget.errorWidgetHeight ?? (addButtonHeight + 40);
       }
     }
@@ -123,11 +115,9 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
     const double staticHeight = 150.0; // Static value fallback
     final double calculatedHeight = baseOnHeightCalculate();
 
-    //print(calculatedHeight);
     // If widget.overlayHeight is not provided, use staticHeight
     final double maxHeight = widget.overlayHeight ?? staticHeight;
 
-    //print(calculatedHeight > maxHeight ? maxHeight : calculatedHeight);
     // Return the smaller value between the calculated height and maxHeight
     return calculatedHeight > maxHeight ? maxHeight : calculatedHeight;
   }
@@ -276,7 +266,8 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
   bool isItemSelected(int index){
     String? selectedValue = (selectedItemConvertor(selectedItem) ?? "");
     String? selectedIndexValue = selectedItemConvertor(widget.item[index]);
-    return selectedIndexValue == selectedValue;
+    bool checkInitCheck = (widget.initialItem as T) == widget.item[index];
+    return selectedIndexValue == selectedValue || checkInitCheck;
   }
 
   ///This is for the drop-down container decoration. If the user wants to provide
