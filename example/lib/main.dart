@@ -384,15 +384,6 @@ class _DropDownClassState extends State<DropDownClass> {
                         ),
                       );
                     },
-                    // selectedItemBuilder: (context, item) {
-                    //   return Text(
-                    //     item.name,
-                    //     style: const TextStyle(
-                    //         fontSize: 12,
-                    //         fontWeight: FontWeight.w400
-                    //     ),
-                    //   );
-                    // },
                   )
               ),
               const SizedBox(width: 15),
@@ -505,15 +496,6 @@ class _DropDownClassState extends State<DropDownClass> {
                         ),
                       );
                     },
-                    // selectedItemBuilder: (context, item) {
-                    //   return Text(
-                    //     item.name,
-                    //     style: const TextStyle(
-                    //         fontSize: 12,
-                    //         fontWeight: FontWeight.w400
-                    //     ),
-                    //   );
-                    // },
                   )
               )
             ],
