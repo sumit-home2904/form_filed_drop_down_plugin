@@ -6,7 +6,7 @@ issue_tracker: https://github.com/sumit-home2904/form_filed_drop_down_plugin/iss
 Publisher: Sumit Sharma
 license: MIT
 
-version: 2.2.1
+version: 3.0.0
 
 environment:
   sdk: ^3.5.3

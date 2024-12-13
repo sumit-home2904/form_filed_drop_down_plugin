@@ -1,3 +1,6 @@
+# 3.0.0
+TextController issue resolved, and some properties made optional.
+
 # 2.2.1
 issue fixed  
 
