@@ -19,9 +19,8 @@ class FormFiledDropDown<T> extends StatefulWidget {
   /// Use this for [FromFieldDropDown] to read only from the dropdown you want.
   final bool readOnly;
 
-  /// If a [textController] is not specified, [initialItem] can be used to give
+
   /// the automatically generated controller an initial value.
-  ///
   final T? initialItem;
 
   /// use if you using api api
@@ -97,8 +96,6 @@ class FormFiledDropDown<T> extends StatefulWidget {
   /// )
   final Widget? addButton;
 
-  /// TextFormFiled text controller
-  final TextEditingController textController;
 
   /// Callback function when an item is selected.
   final Function(T? value) onChanged;
@@ -164,7 +161,7 @@ class FormFiledDropDown<T> extends StatefulWidget {
   ///      ),
   ///    );
   /// },
-  final SelectedItemBuilder<T> selectedItemBuilder;
+  final SelectedItemBuilder<T>? selectedItemBuilder;
   /// To search for your item, use the search functionality in the enter list,
   /// or we can utilize the API search functionality.
   final Future<List<T>> Function(String value)? onSearch;
@@ -194,7 +191,7 @@ class FormFiledDropDown<T> extends StatefulWidget {
 
 
   /// we can validate your drop-down using a [validator]
-  final String? Function(String?)? validator;
+  final String? Function(String? value)? validator;
 
 
   /// Creates a [Drop-down] that contains a [TextField].
@@ -237,10 +234,9 @@ class FormFiledDropDown<T> extends StatefulWidget {
     this.isApiLoading = false,
     this.filedReadOnly = false,
     this.canShowButton = false,
-    required this.textController,
     required this.listItemBuilder,
     required this.filedDecoration,
-    required this.selectedItemBuilder,
+    this.selectedItemBuilder,
     this. textAlign = TextAlign. start,
   });
 
@@ -256,6 +252,7 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
   final GlobalKey textFieldKey = GlobalKey();
   final key1 = GlobalKey(), key2 = GlobalKey();
   bool isTypingDisabled = false;
+  final TextEditingController textController = TextEditingController();
 
   @override
   void initState() {
@@ -273,15 +270,15 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       items = widget.item;
-      widget.textController.text =
+      textController.text =
           selectedItemConvertor(listData: widget.initialItem) ?? "";
       selectedItem = widget.initialItem;
     });
   }
 
   String? selectedItemConvertor({T? listData}) {
-    if (listData != null) {
-      return (widget.selectedItemBuilder(context, listData as T)).data;
+    if (listData != null && widget.selectedItemBuilder != null) {
+      return (widget.selectedItemBuilder!(context, listData as T)).data??"";
     }
     return null;
   }
@@ -303,7 +300,7 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
         if(widget.initialItem == null){
           selectedItem = null;
           widget.onChanged(null);
-          widget.textController.clear();
+          textController.clear();
           if(widget.onSearch != null) widget.onSearch!("");
         }else{
           selectedItem = widget.initialItem;
@@ -323,7 +320,7 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
         return GestureDetector(
           onTap: () {
             if (selectedItem == null) {
-              widget.textController.clear();
+              textController.clear();
               if (widget.onSearch != null) {
                 widget.onSearch!("");
               }
@@ -336,7 +333,7 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
               children: [
                 OverlayBuilder(
                   selectedItemBuilder: widget.selectedItemBuilder,
-                  textController: widget.textController,
+                  textController: textController,
                   controller: widget.controller,
                   textStyle: widget.textStyle,
                   onChanged: widget.onChanged,
@@ -389,7 +386,7 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
             textAlign: widget.textAlign,
             readOnly: isTypingDisabled ?  true : widget.filedReadOnly,
             focusNode: widget.focusNode,
-            controller: widget.textController,
+            controller: textController,
             showCursor: widget.showCursor,
             cursorHeight: widget.cursorHeight,
             cursorWidth: widget.cursorWidth ?? 2.0,

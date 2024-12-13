@@ -1,3 +1,8 @@
+import 'dart:convert';
+
+CityModel cityModelFromJson(String str) => CityModel.fromJson(json.decode(str));
+String cityModelToJson(CityModel data) => json.encode(data.toJson());
+
 class CityModel {
   final int id;
   final String name;
@@ -13,6 +18,14 @@ class CityModel {
     stateId: json["state_id"],
     isActive: json["isActive"]!,
   );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is CityModel && runtimeType == other.runtimeType && id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
 
   Map<String, dynamic> toJson() => {
     "id": id,

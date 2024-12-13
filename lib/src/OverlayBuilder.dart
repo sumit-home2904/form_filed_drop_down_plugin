@@ -26,7 +26,7 @@ class OverlayBuilder<T> extends StatefulWidget {
   final OverlayPortalController controller;
   final ListItemBuilder<T> listItemBuilder;
   final TextEditingController textController;
-  final SelectedItemBuilder<T> selectedItemBuilder;
+  final SelectedItemBuilder<T>? selectedItemBuilder;
 
 
   const OverlayBuilder({
@@ -54,7 +54,7 @@ class OverlayBuilder<T> extends StatefulWidget {
     this.canShowButton = false,
     required this.textController,
     required this.listItemBuilder,
-    required this.selectedItemBuilder,
+    this.selectedItemBuilder,
   });
 
   @override
@@ -127,7 +127,9 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      selectedItem = widget.initialItem;
+      if(widget.initialItem != null) {
+        selectedItem = (widget.initialItem as T);
+      }
       checkRenderObjects(); // Start checking render objects.
     });
   }
@@ -158,6 +160,12 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
   @override
   void didUpdateWidget(covariant OverlayBuilder<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
+
+    if(widget.initialItem != oldWidget.initialItem) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        selectedItem = (widget.initialItem as T)??null;
+      });
+    }
 
     // Check if the item list or its length has changed
     if (oldWidget.item != widget.item || oldWidget.item.length != widget.item.length) {
@@ -263,12 +271,19 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
   /// kind of value is visible when the user selects any type of value from the
   /// drop-down, or that kind of data will be available in your list; otherwise,
   /// you will encounter an error.
-  bool isItemSelected(int index){
-    String? selectedValue = (selectedItemConvertor(selectedItem) ?? "");
+  bool isItemSelected(int index) {
+    String? selectedValue = selectedItemConvertor(selectedItem)??"";
     String? selectedIndexValue = selectedItemConvertor(widget.item[index]);
-    bool checkInitCheck = (widget.initialItem as T) == widget.item[index];
-    return selectedIndexValue == selectedValue || checkInitCheck;
+    print("object:---> $selectedValue");
+    print("object 2:---> $selectedIndexValue");
+    bool selectedItemValue = false;
+    if(selectedItem != null) {
+      selectedItemValue = (selectedItem as T) == widget.item[index];
+    }
+    return selectedValue == selectedIndexValue || selectedItemValue;
   }
+
+
 
   ///This is for the drop-down container decoration. If the user wants to provide
   /// a custom decoration, they can do so. However, if the widget is not set for
@@ -294,14 +309,14 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
   onItemSelected(index){
     widget.controller.hide();
     selectedItem = widget.item[index];
-    widget.textController.text = selectedItemConvertor(selectedItem)??"";
+    widget.textController.text = selectedItemConvertor(selectedItem)??"${selectedItem}";
     widget.onChanged(widget.item[index]);
     setState(() {});
   }
 
   String? selectedItemConvertor(T? listData) {
-    if (listData != null) {
-      return (widget.selectedItemBuilder(context, listData as T)).data;
+    if (listData != null && widget.selectedItemBuilder !=null) {
+      return (widget.selectedItemBuilder!(context, listData as T)).data??"";
     }
     return null;
   }

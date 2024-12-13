@@ -50,7 +50,6 @@ class DropDownClass extends StatelessWidget {
     return Scaffold(
       body: FormFiledDropDown<String>(
         controller: itemController,
-        textController: itemTextController,
         item : itemList,
         textStyle: const TextStyle(
             fontSize: 12,
@@ -64,15 +63,6 @@ class DropDownClass extends StatelessWidget {
             style: TextStyle(
                 fontSize: 12,
                 color: isSelected ? Colors.white : Colors.black,
-                fontWeight: FontWeight.w400
-            ),
-          );
-        },
-        selectedItemBuilder: (context, item) {
-          return Text(
-            item!,
-            style: const TextStyle(
-                fontSize: 12,
                 fontWeight: FontWeight.w400
             ),
           );
@@ -131,7 +121,6 @@ class DropDownClass extends StatelessWidget {
                 ),
               ),
             ),
-            textController: itemTextController,
             textStyle: const TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w400
@@ -155,15 +144,6 @@ class DropDownClass extends StatelessWidget {
                 ),
               );
             },
-            selectedItemBuilder: (context, item) {
-              return Text(
-                item!,
-                style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400
-                ),
-              );
-            },
           ),
         ],
       ),
@@ -172,7 +152,45 @@ class DropDownClass extends StatelessWidget {
 }
 ```
 
-### **3.FormFiledDropDown with Dynamic Search or API Integration**
+### **3 Custom dropdown with custom type model
+
+Let's start with the type of object we are going to work with:
+
+``` dart
+ class CityModel {
+  final int id;
+  final String name;
+  final int stateId;
+  final String isActive;
+
+  CityModel({required this.id, required this.name, required this.stateId, required this.isActive});
+
+
+  factory CityModel.fromJson(Map<String, dynamic> json) => CityModel(
+    id: json["id"],
+    name: json["name"],
+    stateId: json["state_id"],
+    isActive: json["isActive"]!,
+  );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is CityModel && runtimeType == other.runtimeType && id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+    "state_id": stateId,
+    "isActive": isActive,
+  };
+}
+```
+
+### **4.FormFiledDropDown with Dynamic Search or API Integration**
 
 Advanced usage example for fetching dropdown items dynamically from an API.
 
@@ -188,7 +206,6 @@ class DropDownClass extends StatelessWidget {
         children: [
           FormFiledDropDown<String>(
             controller: itemController,
-            textController: itemTextController,
             initialItem: selectedItem,
             item : itemList,
             onTap: () async{
@@ -199,39 +216,8 @@ class DropDownClass extends StatelessWidget {
                 fontSize: 12,
                 fontWeight: FontWeight.w400
             ),
-            filedDecoration: InputDecoration(
-                contentPadding: const EdgeInsets.all(10),
-                errorStyle:const TextStyle(fontSize: 12,color: Colors.red,),
-                fillColor: Colors.white,
-                hintStyle: TextStyle(color: Colors.grey.shade800),
-                filled: true,
-                focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    borderSide:  const BorderSide(
-                        color: Colors.blueAccent
-                    )
-                ),
-                enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    borderSide: const BorderSide(
-                        color: Colors.blueAccent
-                    )
-                ),
-                errorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    borderSide: const BorderSide(
-                        color: Colors.red
-                    )
-                ),
-                focusedErrorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    borderSide: const BorderSide(
-                        color: Colors.red
-                    )
-                )
-            ),
-            onChanged: (String? value) {
-            },
+            filedDecoration: InputDecoration(),
+            onChanged: (String? value) {},
             onSearch: (value) async {
               // We can call your API and search from it. Also, I can implement local search in your static list.
               return itemList.where((element) {
@@ -244,15 +230,6 @@ class DropDownClass extends StatelessWidget {
                 style: TextStyle(
                     fontSize: 12,
                     color: isSelected ? Colors.white : Colors.black,
-                    fontWeight: FontWeight.w400
-                ),
-              );
-            },
-            selectedItemBuilder: (context, item) {
-              return Text(
-                item!,
-                style: const TextStyle(
-                    fontSize: 12,
                     fontWeight: FontWeight.w400
                 ),
               );
@@ -288,7 +265,6 @@ class DropDownClass extends StatelessWidget {
 | `errorMessage`        | `Text?`                     | Custom error message when no items are found.          |
 | `overlayHeight`       | `double?`                   | Height of the dropdown overlay.                        |
 | `addButton`           | `Widget?`                   | Adds a custom button for additional functionality.     |
-| `textController`      | `TextEditingController`     | Controller for the `TextFormField`.                    |
 | `onChanged`           | `Function(T? value)`        | Callback triggered when an item is selected.           |
 | `menuDecoration`      | `BoxDecoration?`            | Custom decoration for the dropdown menu.               |
 | `filedDecoration`     | `InputDecoration`           | Decoration for the `TextFormField`.                    |
