@@ -1,5 +1,5 @@
 # 2.2.1
-issue fixed fixed 
+issue fixed  
 
 # 2.1.0
 bug fixed 
