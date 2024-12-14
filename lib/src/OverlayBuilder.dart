@@ -233,6 +233,7 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
         child: Column(
           children: [
             if(widget.canShowButton)
+              if(widget.addButton!=null)
               SizedBox(
                   key: addButtonKey,
                   child: widget.addButton??SizedBox(key: addButtonKey)
@@ -333,9 +334,11 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           if(widget.canShowButton)
-            SizedBox(
-                child: widget.addButton??SizedBox()
-            ),
+            if(widget.addButton!=null)
+              SizedBox(
+                  key: addButtonKey,
+                  child: widget.addButton??SizedBox(key: addButtonKey)
+              ),
           Spacer(),
           widget.errorMessage ?? const Text("No options"),
           Spacer(),
