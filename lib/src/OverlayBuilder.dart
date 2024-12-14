@@ -274,8 +274,8 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
   bool isItemSelected(int index) {
     String? selectedValue = selectedItemConvertor(selectedItem)??"";
     String? selectedIndexValue = selectedItemConvertor(widget.item[index]);
-    print("object:---> $selectedValue");
-    print("object 2:---> $selectedIndexValue");
+    // print("object:---> $selectedValue");
+    // print("object 2:---> $selectedIndexValue");
     bool selectedItemValue = false;
     if(selectedItem != null) {
       selectedItemValue = (selectedItem as T) == widget.item[index];

@@ -190,35 +190,7 @@ class _DropDownClassState extends State<DropDownClass> {
                             ],
                           ),
                         ),
-                        contentPadding: const EdgeInsets.all(10),
-                        errorStyle:const TextStyle(fontSize: 12,color: Colors.red,),
-                        fillColor: Colors.white,
-                        hintStyle: TextStyle(color: Colors.grey.shade800),
-                        filled: true,
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            borderSide:  const BorderSide(
-                                color: Colors.blueAccent
-                            )
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            borderSide: const BorderSide(
-                                color: Colors.blueAccent
-                            )
-                        ),
-                        errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            borderSide: const BorderSide(
-                                color: Colors.red
-                            )
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            borderSide: const BorderSide(
-                                color: Colors.red
-                            )
-                        )
+
                     ),
                     onChanged: (CountryModel? value) {
                       setState(() {
@@ -288,63 +260,34 @@ class _DropDownClassState extends State<DropDownClass> {
                         )
                     ),
                     filedDecoration: InputDecoration(
-                        suffixIcon: IntrinsicWidth(
-                          child: Row(
-                            children: [
-                              if(selectedState != null)
-                                InkWell(
-                                  onTap:() {
-                                    setState(() {
-                                      selectedState = null;
-                                      if(selectedCountry == null) tempStatesList.clear();
-                                    });
-                                  },
-                                  child: const Icon(
-                                    Icons.clear,
-                                    size: 20,
-                                  ),
+                      suffixIcon: IntrinsicWidth(
+                        child: Row(
+                          children: [
+                            if(selectedState != null)
+                              InkWell(
+                                onTap:() {
+                                  setState(() {
+                                    selectedState = null;
+                                    if(selectedCountry == null) tempStatesList.clear();
+                                  });
+                                },
+                                child: const Icon(
+                                  Icons.clear,
+                                  size: 20,
                                 ),
-
-                              if(selectedState != null)
-                                const SizedBox(width: 5),
-                              const Icon(
-                                Icons.arrow_drop_down_sharp,
-                                size: 20,
                               ),
-                              const SizedBox(width: 8),
 
-                            ],
-                          ),
+                            if(selectedState != null)
+                              const SizedBox(width: 5),
+                            const Icon(
+                              Icons.arrow_drop_down_sharp,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+
+                          ],
                         ),
-                        contentPadding: const EdgeInsets.all(10),
-                        errorStyle:const TextStyle(fontSize: 12,color: Colors.red,),
-                        fillColor: Colors.white,
-                        hintStyle: TextStyle(color: Colors.grey.shade800),
-                        filled: true,
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            borderSide:  const BorderSide(
-                                color: Colors.blueAccent
-                            )
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            borderSide: const BorderSide(
-                                color: Colors.blueAccent
-                            )
-                        ),
-                        errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            borderSide: const BorderSide(
-                                color: Colors.red
-                            )
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            borderSide: const BorderSide(
-                                color: Colors.red
-                            )
-                        )
+                      ),
                     ),
                     onChanged: (StatesModel? value) {
                       setState(() {
@@ -408,64 +351,35 @@ class _DropDownClassState extends State<DropDownClass> {
                         )
                     ),
                     filedDecoration: InputDecoration(
-                        suffixIcon: IntrinsicWidth(
-                          child: Row(
-                            children: [
-                              if(selectedCity != null)
-                                InkWell(
-                                  onTap:() {
-                                    setState(() {
-                                      selectedCity = null;
-                                      if(selectedState == null) tempCityList.clear();
+                      suffixIcon: IntrinsicWidth(
+                        child: Row(
+                          children: [
+                            if(selectedCity != null)
+                              InkWell(
+                                onTap:() {
+                                  setState(() {
+                                    selectedCity = null;
+                                    if(selectedState == null) tempCityList.clear();
 
-                                    });
-                                  },
-                                  child: const Icon(
-                                    Icons.clear,
-                                    size: 20,
-                                  ),
+                                  });
+                                },
+                                child: const Icon(
+                                  Icons.clear,
+                                  size: 20,
                                 ),
-
-                              if(selectedCity != null)
-                                const SizedBox(width: 5),
-                              const Icon(
-                                Icons.arrow_drop_down_sharp,
-                                size: 20,
                               ),
-                              const SizedBox(width: 8),
 
-                            ],
-                          ),
+                            if(selectedCity != null)
+                              const SizedBox(width: 5),
+                            const Icon(
+                              Icons.arrow_drop_down_sharp,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+
+                          ],
                         ),
-                        contentPadding: const EdgeInsets.all(10),
-                        errorStyle:const TextStyle(fontSize: 12,color: Colors.red,),
-                        fillColor: Colors.white,
-                        hintStyle: TextStyle(color: Colors.grey.shade800),
-                        filled: true,
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            borderSide:  const BorderSide(
-                                color: Colors.blueAccent
-                            )
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            borderSide: const BorderSide(
-                                color: Colors.blueAccent
-                            )
-                        ),
-                        errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            borderSide: const BorderSide(
-                                color: Colors.red
-                            )
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            borderSide: const BorderSide(
-                                color: Colors.red
-                            )
-                        )
+                      ),
                     ),
                     onChanged: (CityModel? value) {
                       setState(() {

@@ -320,10 +320,13 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
         return GestureDetector(
           onTap: () {
             if (selectedItem == null) {
+              // print("object $selectedItem");
               textController.clear();
               if (widget.onSearch != null) {
                 widget.onSearch!("");
               }
+            }else{
+              textController.text =  selectedItemConvertor(listData: widget.initialItem) ?? "";
             }
             widget.controller.hide();
           },
@@ -420,9 +423,9 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
   /// drop-down search or text form filed on change function
   onChange(value) async {
     if (value.isEmpty) {
-      selectedItem = null;
-      widget.onChanged(null);
-      onSearchCalled(value);
+      // selectedItem = null;
+      // widget.onChanged(null);
+      onSearchCalled("");
     }else {
       onSearchCalled(value);
     }
