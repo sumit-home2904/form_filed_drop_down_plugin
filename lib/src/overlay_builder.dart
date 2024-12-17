@@ -3,7 +3,7 @@ import 'package:form_filed_drop_down/src/animated_section.dart';
 import 'package:form_filed_drop_down/src/signatures.dart';
 
 class OverlayBuilder<T> extends StatefulWidget {
-  final layerLink;
+  final LayerLink layerLink;
   final List<T> item;
   final T? initialItem;
   final bool isApiLoading;
@@ -77,13 +77,14 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
     double addButtonHeight = 0;
     double itemHeight = 40; // Default height
 
-    try {
-      // Calculate add button height
-      if (context != null) {
-        final renderBox = context.findRenderObject() as RenderBox?;
-        addButtonHeight = renderBox?.size.height ?? 0.0;
-      }
 
+    // Calculate add button height
+    if (context != null) {
+      final renderBox = context.findRenderObject() as RenderBox?;
+      addButtonHeight = renderBox?.size.height ?? 0.0;
+    }
+
+    try {
       // Calculate item height
       if (itemKeyContext != null) {
         final renderBox = itemKeyContext.findRenderObject() as RenderBox?;
