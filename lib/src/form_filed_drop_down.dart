@@ -289,11 +289,13 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
   void didUpdateWidget(covariant FormFiledDropDown<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (widget.item != oldWidget.item) {
+    if (widget.item != oldWidget.item || widget.onSearch != oldWidget.onSearch) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         items = widget.item;
       });
     }
+
+
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if(widget.initialItem != oldWidget.initialItem){
@@ -322,13 +324,15 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
         return GestureDetector(
           onTap: () {
             if (selectedItem == null) {
-              // print("object $selectedItem");
               textController.clear();
               if (widget.onSearch != null) {
                 widget.onSearch!("");
               }
             }else{
               textController.text =  selectedItemConvertor(listData: widget.initialItem) ?? "";
+              if (widget.onSearch != null) {
+                widget.onSearch!("");
+              }
             }
             widget.controller.hide();
           },

@@ -1,11 +1,13 @@
 import 'dart:convert';
+import 'package:example/MainProvider.dart';
+import 'package:example/Model/ClientModel.dart';
+import 'package:form_filed_drop_down/form_filed_drop_down.dart';
+import 'package:provider/provider.dart';
 import 'Model/CityModel.dart';
 import 'Model/StatesModel.dart';
 import 'Model/CountryModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:form_filed_drop_down/form_filed_drop_down.dart';
-
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +18,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => MainProvider())
+      ],
+      child: MaterialApp(
         title: 'FormFiled DropDown Example',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -30,6 +36,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         home: const DropDownClass(),
+      ),
     );
   }
 }
@@ -44,30 +51,13 @@ class DropDownClass extends StatefulWidget {
 class _DropDownClassState extends State<DropDownClass> {
 
   final countryController = OverlayPortalController();
-  final countryController1 = OverlayPortalController();
   final stateController = OverlayPortalController();
   final cityController = OverlayPortalController();
   final itemController = OverlayPortalController();
 
 
-  FocusNode focusNode = FocusNode();
-  FocusNode focusNode1 = FocusNode();
-  FocusNode focusNode2 = FocusNode();
-  FocusNode focusNode3 = FocusNode();
-
-
-
-  @override
-  void initState() {
-    super.initState();
-    loadCity();
-    loadState();
-    loadCountry();
-  }
-
-
+  late MainProvider mainProvider;
   CountryModel? selectedCountry;
-  CountryModel? selectedCountry1;
   StatesModel? selectedState;
   CityModel? selectedCity;
 
@@ -77,6 +67,10 @@ class _DropDownClassState extends State<DropDownClass> {
   List<CityModel> tempCityList = [];
   List<CityModel> cityList = [];
 
+
+  FocusNode focusNode = FocusNode();
+  FocusNode focusNode2 = FocusNode();
+  FocusNode focusNode3 = FocusNode();
 
   Future<void> loadCity() async {
     cityList = [];
@@ -107,62 +101,21 @@ class _DropDownClassState extends State<DropDownClass> {
     setState(() {});
   }
 
-  clearCountry(){
-    tempCityList = [];
-    tempStatesList = [];
-    selectedCity = null;
-    selectedState = null;
-    selectedCountry = null;
+
+  @override
+  void initState() {
+    super.initState();
+
+    mainProvider = Provider.of<MainProvider>(context,listen: false);
+    loadCity();
+    loadState();
     loadCountry();
-    setState(() {});
   }
 
-  countryOnChange(value){
-    selectedCountry = value;
-    selectedCountry1 = value;
-    selectedCity = null;
-    selectedState = null;
-    tempStatesList = [];
-    tempCityList = [];
-    tempStatesList = statesList.where((element) {
-      return "${element.countryId}" == "${selectedCountry?.id}";
-    }).toList();
-    setState(() {});
-  }
-
-  clearState(){
-    selectedState = null;
-    if(selectedCountry == null) tempStatesList.clear();
-    setState(() {});
-  }
-
-  stateOnChange(value){
-    tempCityList = [];
-    selectedCity = null;
-    selectedState = value;
-
-    tempCityList = cityList.where((element) {
-      return "${element.stateId}" == "${selectedState?.id}";
-    }).toList();
-    setState(() {});
-  }
-
-
-  clearCity(){
-    selectedCity = null;
-    if(selectedState == null) tempCityList.clear();
-    setState(() {});
-  }
-
-  cityOnChange(value){
-    selectedCity = value;
-    setState(() {});
-  }
-  
   @override
   Widget build(BuildContext context) {
+    mainProvider = Provider.of<MainProvider>(context,listen: true);
 
-    // print(selectedCountry1);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -218,37 +171,52 @@ class _DropDownClassState extends State<DropDownClass> {
                             )
                         ),
                         filedDecoration: InputDecoration(
-                          contentPadding: const EdgeInsets.all(10),
-                          hintStyle: TextStyle(color: Colors.grey.shade800),
-                          errorStyle:const TextStyle(fontSize: 12,color: Colors.red,),
                           suffixIcon: IntrinsicWidth(
-                              child: Row(
-                                children: [
-                                  if(selectedCountry != null)
-                                    InkWell(
-                                      onTap:() {
-                                        clearCountry();
-                                      },
-                                      child: const Icon(
-                                        Icons.clear,
-                                        size: 20,
-                                      ),
+                            child: Row(
+                              children: [
+                                if(selectedCountry != null)
+                                  InkWell(
+                                    onTap:() {
+                                      setState(() {
+                                        tempCityList = [];
+                                        tempStatesList = [];
+                                        // print(tempStatesList.length);
+                                        selectedCity = null;
+                                        selectedState = null;
+                                        selectedCountry = null;
+                                        loadCountry();
+                                      });
+                                    },
+                                    child: const Icon(
+                                      Icons.clear,
+                                      size: 20,
                                     ),
-
-                                  if(selectedCountry != null)
-                                    const SizedBox(width: 5),
-                                  const Icon(
-                                    Icons.arrow_drop_down_sharp,
-                                    size: 20,
                                   ),
-                                  const SizedBox(width: 8),
 
-                                ],
-                              ),
+                                if(selectedCountry != null)
+                                  const SizedBox(width: 5),
+                                const Icon(
+                                  Icons.arrow_drop_down_sharp,
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 8),
+
+                              ],
                             ),
+                          ),
+
                         ),
                         onChanged: (CountryModel? value) {
-                          countryOnChange(value);
+                          setState(() {
+                            selectedCountry = value;
+                            selectedCity = null;
+                            selectedState = null;
+                            tempStatesList = [];
+                            tempCityList = [];
+                            tempStatesList = statesList.where((element) {
+                              return "${element.countryId}" == "${selectedCountry?.id}";
+                            }).toList();
+                          });
                         },
                         onSearch: (value) async {
                           return countryList.where((element) {
@@ -306,16 +274,16 @@ class _DropDownClassState extends State<DropDownClass> {
                             )
                         ),
                         filedDecoration: InputDecoration(
-                          contentPadding: const EdgeInsets.all(10),
-                          hintStyle: TextStyle(color: Colors.grey.shade800),
-                          errorStyle:const TextStyle(fontSize: 12,color: Colors.red,),
                           suffixIcon: IntrinsicWidth(
                             child: Row(
                               children: [
                                 if(selectedState != null)
                                   InkWell(
                                     onTap:() {
-                                      clearState();
+                                      setState(() {
+                                        selectedState = null;
+                                        if(selectedCountry == null) tempStatesList.clear();
+                                      });
                                     },
                                     child: const Icon(
                                       Icons.clear,
@@ -330,12 +298,22 @@ class _DropDownClassState extends State<DropDownClass> {
                                   size: 20,
                                 ),
                                 const SizedBox(width: 8),
+
                               ],
                             ),
                           ),
                         ),
                         onChanged: (StatesModel? value) {
-                          stateOnChange(value);
+                          setState(() {
+                            tempCityList = [];
+                            selectedCity = null;
+                            selectedState = value;
+
+                            tempCityList = cityList.where((element) {
+                              return "${element.stateId}" == "${selectedState?.id}";
+                            }).toList();
+
+                          });
                         },
 
                         onSearch: (value) async {
@@ -344,6 +322,7 @@ class _DropDownClassState extends State<DropDownClass> {
                           }).toList();
                         },
                         listItemBuilder: (context, item, isSelected) {
+                          // print("isSelected $isSelected");
                           int index = statesList.indexOf(item);
                           return Container(
                             padding:const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
@@ -359,15 +338,6 @@ class _DropDownClassState extends State<DropDownClass> {
                                   color: isSelected ? Colors.white : Colors.black,
                                   fontWeight: FontWeight.w400
                               ),
-                            ),
-                          );
-                        },
-                        selectedItemBuilder: (context, item) {
-                          return Text(
-                            item.name,
-                            style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400
                             ),
                           );
                         },
@@ -395,16 +365,17 @@ class _DropDownClassState extends State<DropDownClass> {
                             )
                         ),
                         filedDecoration: InputDecoration(
-                          contentPadding: const EdgeInsets.all(10),
-                          hintStyle: TextStyle(color: Colors.grey.shade800),
-                          errorStyle:const TextStyle(fontSize: 12,color: Colors.red,),
                           suffixIcon: IntrinsicWidth(
                             child: Row(
                               children: [
                                 if(selectedCity != null)
                                   InkWell(
                                     onTap:() {
-                                      clearCity();
+                                      setState(() {
+                                        selectedCity = null;
+                                        if(selectedState == null) tempCityList.clear();
+
+                                      });
                                     },
                                     child: const Icon(
                                       Icons.clear,
@@ -425,7 +396,9 @@ class _DropDownClassState extends State<DropDownClass> {
                           ),
                         ),
                         onChanged: (CityModel? value) {
-                          cityOnChange(value);
+                          setState(() {
+                            selectedCity = value;
+                          });
                         },
                         onSearch: (value) async {
                           return tempCityList.where((element) {
@@ -451,21 +424,95 @@ class _DropDownClassState extends State<DropDownClass> {
                             ),
                           );
                         },
-                        selectedItemBuilder: (context, item) {
-                          return Text(
-                            item.name,
-                            style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400
-                            ),
-                          );
-                        },
                       )
                   )
                 ],
               ),
-              const SizedBox(height: 20),
 
+              FormFiledDropDown<ClientModel>(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                controller: itemController,
+                item : mainProvider.clientList,
+                initialItem: mainProvider.selectedClient,
+                isApiLoading: mainProvider.isLoading,
+                textStyle: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400
+                ),
+                menuDecoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(4),
+                    border: Border.all(
+                        color: Colors.blueAccent
+                    )
+                ),
+                filedDecoration: InputDecoration(
+                  suffixIcon: IntrinsicWidth(
+                    child: Row(
+                      children: [
+                        if(selectedCity != null)
+                          InkWell(
+                            onTap:() {
+                              setState(() {
+                                selectedCity = null;
+                                if(selectedState == null) tempCityList.clear();
+
+                              });
+                            },
+                            child: const Icon(
+                              Icons.clear,
+                              size: 20,
+                            ),
+                          ),
+
+                        if(selectedCity != null)
+                          const SizedBox(width: 5),
+                        const Icon(
+                          Icons.arrow_drop_down_sharp,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+
+                      ],
+                    ),
+                  ),
+                ),
+                onChanged: (ClientModel? value) {
+                  setState(() {
+                    mainProvider.selectedClient = value;
+                  });
+                },
+                onSearch: (value) async{
+                  return mainProvider.clientList.where((element) {
+                    return element.name.toLowerCase().contains(value.toLowerCase());
+                  }).toList();
+                },
+                onTap: () async => mainProvider.getClient(""),
+                listItemBuilder: (context, item, isSelected) {
+                  int index = mainProvider.clientList.indexOf(item);
+                  return Container(
+                    padding:const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                    margin: EdgeInsets.fromLTRB(5, index == 0 ? 7:2,5,1),
+                    decoration: BoxDecoration(
+                        color: isSelected ? Colors.green : Colors.transparent,
+                        borderRadius: BorderRadius.circular(2)
+                    ),
+                    child: Text(
+                      item.name,
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: isSelected ? Colors.white : Colors.black,
+                          fontWeight: FontWeight.w400
+                      ),
+                    ),
+                  );
+                },
+                selectedItemBuilder: (context, item) {
+                  return Text(
+                    item.name,
+                  );
+                },
+              )
             ],
           ),
         ),
