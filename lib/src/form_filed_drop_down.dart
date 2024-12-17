@@ -5,7 +5,6 @@ import 'overlay_builder.dart';
 import 'signatures.dart';
 
 class FormFiledDropDown<T> extends StatefulWidget {
-
   /// List of strings to display in the dropdown.
   final List<T> item;
 
@@ -18,7 +17,6 @@ class FormFiledDropDown<T> extends StatefulWidget {
 
   /// Use this for [FromFieldDropDown] to read only from the dropdown you want.
   final bool readOnly;
-
 
   /// the automatically generated controller an initial value.
   final T? initialItem;
@@ -44,7 +42,6 @@ class FormFiledDropDown<T> extends StatefulWidget {
   /// call when you need to change cursor cursor Error Color
   final Color? cursorErrorColor;
 
-
   /// Use this to style your search or selected text.
   final TextStyle textStyle;
 
@@ -59,7 +56,6 @@ class FormFiledDropDown<T> extends StatefulWidget {
 
   /// provide drop-down tile height
   final double? overlayHeight;
-
 
   /// call when you need add button or need any kind for button functionality
   /// open a dialog navigate to other page's ect...
@@ -95,7 +91,6 @@ class FormFiledDropDown<T> extends StatefulWidget {
   ///    ),
   /// )
   final Widget? addButton;
-
 
   /// Callback function when an item is selected.
   final Function(T? value) onChanged;
@@ -162,6 +157,7 @@ class FormFiledDropDown<T> extends StatefulWidget {
   ///    );
   /// },
   final SelectedItemBuilder<T>? selectedItemBuilder;
+
   /// To search for your item, use the search functionality in the enter list,
   /// or we can utilize the API search functionality.
   final Future<List<T>> Function(String value)? onSearch;
@@ -172,12 +168,8 @@ class FormFiledDropDown<T> extends StatefulWidget {
   /// call for [menuMargin] to provide Margin for the list view item container
   final EdgeInsets? menuMargin;
 
-
   /// When the value of [canShowButton] is true, the add button becomes visible.
   final bool canShowButton;
-
-
-
 
   /// ccall when you need to change the search field textAlign [TextAlign.start]
   final TextAlign textAlign;
@@ -189,10 +181,8 @@ class FormFiledDropDown<T> extends StatefulWidget {
   /// you to use onButtonTab to navigate or open a dialog box, etc..
   final List<TextInputFormatter>? inputFormatters;
 
-
   /// we can validate your drop-down using a [validator]
   final String? Function(String? value)? validator;
-
 
   /// Creates a [Drop-down] that contains a [TextField].
   ///
@@ -237,7 +227,7 @@ class FormFiledDropDown<T> extends StatefulWidget {
     required this.listItemBuilder,
     required this.filedDecoration,
     this.selectedItemBuilder,
-    this. textAlign = TextAlign. start,
+    this.textAlign = TextAlign.start,
   });
 
   @override
@@ -256,7 +246,7 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
   void initState() {
     super.initState();
     items = [];
-    if(widget.focusNode!=null) {
+    if (widget.focusNode != null) {
       widget.focusNode!.addListener(() async {
         if (widget.focusNode!.hasFocus) {
           if (widget.onTap != null) {
@@ -276,42 +266,39 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
 
   String? selectedItemConvertor({T? listData}) {
     if (listData != null && widget.selectedItemBuilder != null) {
-      return (widget.selectedItemBuilder!(context, listData as T)).data??"";
+      return (widget.selectedItemBuilder!(context, listData as T)).data ?? "";
     }
     return null;
   }
-
-
 
   @override
   void didUpdateWidget(covariant FormFiledDropDown<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (widget.item != oldWidget.item || widget.onSearch != oldWidget.onSearch) {
+    if (widget.item != oldWidget.item ||
+        widget.onSearch != oldWidget.onSearch) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         items = widget.item;
         setState(() {});
       });
     }
 
-
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if(widget.initialItem != oldWidget.initialItem){
-        if(widget.initialItem == null){
+      if (widget.initialItem != oldWidget.initialItem) {
+        if (widget.initialItem == null) {
           selectedItem = null;
           widget.onChanged(null);
           textController.clear();
-          if(widget.onSearch != null) widget.onSearch!("");
-        }else{
+          if (widget.onSearch != null) widget.onSearch!("");
+        } else {
           selectedItem = widget.initialItem;
-          textController.text =  selectedItemConvertor(listData: widget.initialItem) ?? "";
+          textController.text =
+              selectedItemConvertor(listData: widget.initialItem) ?? "";
         }
       }
       setState(() {});
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -319,7 +306,7 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
       controller: widget.controller,
       overlayChildBuilder: (context) {
         final RenderBox? renderBox =
-        textFieldKey.currentContext?.findRenderObject() as RenderBox?;
+            textFieldKey.currentContext?.findRenderObject() as RenderBox?;
         return GestureDetector(
           onTap: () {
             if (selectedItem == null) {
@@ -327,8 +314,9 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
               if (widget.onSearch != null) {
                 widget.onSearch!("");
               }
-            }else{
-              textController.text =  selectedItemConvertor(listData: widget.initialItem) ?? "";
+            } else {
+              textController.text =
+                  selectedItemConvertor(listData: widget.initialItem) ?? "";
               if (widget.onSearch != null) {
                 widget.onSearch!("");
               }
@@ -385,7 +373,6 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
                 isTypingDisabled = false;
               });
             }
-
           },
           child: TextFormField(
             key: textFieldKey,
@@ -393,7 +380,7 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
             keyboardType: widget.keyboardType,
             inputFormatters: widget.inputFormatters,
             textAlign: widget.textAlign,
-            readOnly: isTypingDisabled ?  true : widget.filedReadOnly,
+            readOnly: isTypingDisabled ? true : widget.filedReadOnly,
             focusNode: widget.focusNode,
             controller: textController,
             showCursor: widget.showCursor,
@@ -413,13 +400,11 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
     );
   }
 
-
-
   /// drop-down on tap function
-  textFiledOnTap()async {
-    if(!(widget.readOnly)) {
+  textFiledOnTap() async {
+    if (!(widget.readOnly)) {
       widget.controller.show();
-      if (widget.onTap != null){
+      if (widget.onTap != null) {
         items = await widget.onTap!();
       }
       setState(() {});
@@ -430,7 +415,7 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
   onChange(value) async {
     if (value.isEmpty) {
       onSearchCalled("");
-    }else {
+    } else {
       onSearchCalled(value);
     }
     setState(() {});
@@ -440,8 +425,4 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
   onSearchCalled(value) async {
     if (widget.onSearch != null) items = await widget.onSearch!(value);
   }
-
-
 }
-
-

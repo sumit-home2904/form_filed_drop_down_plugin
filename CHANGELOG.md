@@ -1,14 +1,11 @@
-# 3.0.5
+# 3.0.6
 bug fixed
 
 # 3.0.3
 bug fixed
 
 # 3.0.2
-search selection issue fixed# 
-
-#3.0.1
-search selection issue fixed
+search selection issue fixed#
 
 # 3.0.0
 TextController issue resolved, and some properties made optional.

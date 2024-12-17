@@ -28,7 +28,6 @@ class OverlayBuilder<T> extends StatefulWidget {
   final TextEditingController textController;
   final SelectedItemBuilder<T>? selectedItemBuilder;
 
-
   const OverlayBuilder({
     super.key,
     this.renderBox,
@@ -62,7 +61,6 @@ class OverlayBuilder<T> extends StatefulWidget {
 }
 
 class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
-
   T? selectedItem;
   bool displayOverlayBottom = true;
 
@@ -72,45 +70,44 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
 
   /// calculate drop-down height base on item length
   double baseOnHeightCalculate() {
-    final context = addButtonKey.currentContext;
-    final itemKeyContext = itemListKey.currentContext;
-    double addButtonHeight = 0;
-    double itemHeight = 40; // Default height
-
-
-    // Calculate add button height
-    if (context != null) {
-      final renderBox = context.findRenderObject() as RenderBox?;
-      addButtonHeight = renderBox?.size.height ?? 0.0;
-    }
-
     try {
+      final context = addButtonKey.currentContext;
+      final itemKeyContext = itemListKey.currentContext;
+      double addButtonHeight = 0;
+      double itemHeight = 40; // Default height
+
+      // Calculate add button height
+      if (context != null) {
+        final renderBox = context.findRenderObject() as RenderBox?;
+        addButtonHeight = renderBox?.size.height ?? 0.0;
+      }
+
       // Calculate item height
       if (itemKeyContext != null) {
         final renderBox = itemKeyContext.findRenderObject() as RenderBox?;
         itemHeight = renderBox?.size.height ?? 40; // Default to 40
       }
-    }catch(_){}
 
-    if (widget.canShowButton) {
-      if (widget.item.isNotEmpty) {
-        return widget.item.length * itemHeight + addButtonHeight;
+      if (widget.canShowButton) {
+        if (widget.item.isNotEmpty) {
+          return widget.item.length * itemHeight + addButtonHeight;
+        } else {
+          return widget.errorWidgetHeight ?? (addButtonHeight + 40);
+        }
       } else {
-        return widget.errorWidgetHeight ?? (addButtonHeight + 40);
+        if (widget.item.isNotEmpty) {
+          return widget.item.length * itemHeight + 10;
+        }
+        if (widget.isApiLoading) {
+          return 150; // Default loading height
+        } else {
+          return widget.errorWidgetHeight ?? (addButtonHeight + 40);
+        }
       }
-    } else {
-      if (widget.item.isNotEmpty) {
-        return widget.item.length * itemHeight + 10;
-      }
-      if (widget.isApiLoading) {
-        return 150; // Default loading height
-      } else {
-        return widget.errorWidgetHeight ?? (addButtonHeight + 40);
-      }
+    } catch (_) {
+      return widget.errorWidgetHeight ?? 125;
     }
   }
-
-
 
   /// The height of the drop-down container is calculated based on the item length or
   /// the add button, and when no items are available, the default pass height is displayed.
@@ -125,12 +122,11 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
     return calculatedHeight > maxHeight ? maxHeight : calculatedHeight;
   }
 
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if(widget.initialItem != null) {
+      if (widget.initialItem != null) {
         selectedItem = (widget.initialItem as T);
       }
       checkRenderObjects(); // Start checking render objects.
@@ -140,14 +136,13 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
   /// use for move up and down when not scroll available
   void checkRenderObjects() {
     if (key1.currentContext != null && key2.currentContext != null) {
-      final RenderBox? render1 = key1.currentContext
-          ?.findRenderObject() as RenderBox?;
-      final RenderBox? render2 = key2.currentContext
-          ?.findRenderObject() as RenderBox?;
+      final RenderBox? render1 =
+          key1.currentContext?.findRenderObject() as RenderBox?;
+      final RenderBox? render2 =
+          key2.currentContext?.findRenderObject() as RenderBox?;
 
       if (render1 != null && render2 != null) {
-        final screenHeight = MediaQuery
-            .of(context).size.height;
+        final screenHeight = MediaQuery.of(context).size.height;
         double y = render1.localToGlobal(Offset.zero).dy;
 
         if (screenHeight - y < render2.size.height) {
@@ -159,21 +154,21 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
     }
   }
 
-
   @override
   void didUpdateWidget(covariant OverlayBuilder<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if(widget.initialItem != oldWidget.initialItem) {
+    if (widget.initialItem != oldWidget.initialItem) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         setState(() {
-          selectedItem = (widget.initialItem as T)??null;
+          selectedItem = (widget.initialItem as T) ?? null;
         });
       });
     }
 
     // Check if the item list or its length has changed
-    if (oldWidget.item != widget.item || oldWidget.item.length != widget.item.length) {
+    if (oldWidget.item != widget.item ||
+        oldWidget.item.length != widget.item.length) {
       // Trigger a recalculation and rebuild
       WidgetsBinding.instance.addPostFrameCallback((_) {
         setState(() {
@@ -183,50 +178,41 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return CompositedTransformFollower(
         link: widget.layerLink,
         offset: setOffset(),
-        followerAnchor: displayOverlayBottom ? Alignment.topLeft : Alignment.bottomLeft,
-        child: LayoutBuilder(
-          builder: (context,c) {
-            return SizedBox(
-              key: key1,
-              height: calculateHeight()+4,
-              width: widget.renderBox?.size.width ?? c.maxWidth,
-              child: AnimatedSection(
-                expand: true,
-                animationDismissed: widget.controller.hide,
-                axisAlignment: displayOverlayBottom ? 1.0 : -1.0,
-                child: Container(
-                    key: key2,
-                    height: calculateHeight()+4,
-                    width: MediaQuery.sizeOf(context).width,
-                    margin: widget.menuMargin ?? EdgeInsets.zero,
-                    child: widget.isApiLoading
-                        ?
-                    loaderWidget()
-                        :
-                    (widget.item).isEmpty
-                        ?
-                    emptyErrorWidget()
-                        :
-                    uiListWidget()
-                ),
-              ),
-            );
-          }
-        )
-    );
+        followerAnchor:
+            displayOverlayBottom ? Alignment.topLeft : Alignment.bottomLeft,
+        child: LayoutBuilder(builder: (context, c) {
+          return SizedBox(
+            key: key1,
+            height: calculateHeight() + 4,
+            width: widget.renderBox?.size.width ?? c.maxWidth,
+            child: AnimatedSection(
+              expand: true,
+              animationDismissed: widget.controller.hide,
+              axisAlignment: displayOverlayBottom ? 1.0 : -1.0,
+              child: Container(
+                  key: key2,
+                  height: calculateHeight() + 4,
+                  width: MediaQuery.sizeOf(context).width,
+                  margin: widget.menuMargin ?? EdgeInsets.zero,
+                  child: widget.isApiLoading
+                      ? loaderWidget()
+                      : (widget.item).isEmpty
+                          ? emptyErrorWidget()
+                          : uiListWidget()),
+            ),
+          );
+        }));
   }
-
 
   /// This function returns the UI of drop-down tiles when the user clicks on
   /// the drop-down. After that, how the drop-down will look is all defined in
   /// this function.
-  Widget uiListWidget(){
+  Widget uiListWidget() {
     return NotificationListener<OverscrollIndicatorNotification>(
       onNotification: (notification) {
         notification.disallowIndicator();
@@ -237,11 +223,10 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
         decoration: menuDecoration(),
         child: Column(
           children: [
-            if(widget.canShowButton)
-              if(widget.addButton!=null)
-              SizedBox(child: widget.addButton??SizedBox()),
-
-            const SizedBox(height:2),
+            if (widget.canShowButton)
+              if (widget.addButton != null)
+                SizedBox(child: widget.addButton ?? SizedBox()),
+            const SizedBox(height: 2),
             Expanded(
               child: ListView.builder(
                 shrinkWrap: true,
@@ -254,10 +239,11 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
                   bool selected = isItemSelected(index);
                   return InkWell(
                     key: index == 0 ? itemListKey : null,
-                    onTap: ()=> onItemSelected(index),
+                    onTap: () => onItemSelected(index),
                     child: widget.listItemBuilder(
                       context,
-                      widget.item[index], selected,
+                      widget.item[index],
+                      selected,
                     ),
                   );
                 },
@@ -269,55 +255,48 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
     );
   }
 
-
   /// This method returns a boolean value for the selected item from the list
   /// or user-defined in the selected item builder. You must first define what
   /// kind of value is visible when the user selects any type of value from the
   /// drop-down, or that kind of data will be available in your list; otherwise,
   /// you will encounter an error.
   bool isItemSelected(int index) {
-    String? selectedValue = selectedItemConvertor(selectedItem)??"";
+    String? selectedValue = selectedItemConvertor(selectedItem) ?? "";
     String? selectedIndexValue = selectedItemConvertor(widget.item[index]);
     bool selectedItemValue = false;
-    if(selectedItem != null) {
+    if (selectedItem != null) {
       selectedItemValue = (selectedItem as T) == widget.item[index];
     }
     return selectedValue == selectedIndexValue || selectedItemValue;
   }
 
-
-
   ///This is for the drop-down container decoration. If the user wants to provide
   /// a custom decoration, they can do so. However, if the widget is not set for
   /// the user side, we will provide our own default decoration.
-  BoxDecoration menuDecoration(){
+  BoxDecoration menuDecoration() {
     if (widget.menuDecoration != null) return widget.menuDecoration!;
     return BoxDecoration(
-        color: Colors.grey,
-        borderRadius: BorderRadius.circular(5)
-    );
+        color: Colors.grey, borderRadius: BorderRadius.circular(5));
   }
 
-
-  Offset setOffset(){
-    return Offset(
-        widget.dropdownOffset?.dx??0,
-        displayOverlayBottom ? widget.dropdownOffset?.dy?? 55 : -10
-    );
+  Offset setOffset() {
+    return Offset(widget.dropdownOffset?.dx ?? 0,
+        displayOverlayBottom ? widget.dropdownOffset?.dy ?? 55 : -10);
   }
 
   /// This method is called when the user selects a drop-down value item from the list
-  onItemSelected(index){
+  onItemSelected(index) {
     widget.controller.hide();
     selectedItem = widget.item[index];
-    widget.textController.text = selectedItemConvertor(selectedItem)??"${selectedItem}";
+    widget.textController.text =
+        selectedItemConvertor(selectedItem) ?? "${selectedItem}";
     widget.onChanged(widget.item[index]);
     setState(() {});
   }
 
   String? selectedItemConvertor(T? listData) {
-    if (listData != null && widget.selectedItemBuilder !=null) {
-      return (widget.selectedItemBuilder!(context, listData as T)).data??"";
+    if (listData != null && widget.selectedItemBuilder != null) {
+      return (widget.selectedItemBuilder!(context, listData as T)).data ?? "";
     }
     return null;
   }
@@ -325,7 +304,7 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
   /// This call displays an error message to the user when the item list is
   /// empty or the search value is not found, helping them understand what
   /// is happening in the UI. Additionally, the user can enter their custom message as well.
-  Widget emptyErrorWidget(){
+  Widget emptyErrorWidget() {
     return Container(
       key: addButtonKey,
       decoration: menuDecoration(),
@@ -333,25 +312,23 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          if(widget.canShowButton)
-            if(widget.addButton!=null)
-              SizedBox(child: widget.addButton??SizedBox()
-              ),
+          if (widget.canShowButton)
+            if (widget.addButton != null)
+              SizedBox(child: widget.addButton ?? SizedBox()),
           Spacer(),
           widget.errorMessage ?? const Text("No options"),
           Spacer(),
-
         ],
       ),
     );
   }
 
   /// this function return loader widget
-  Widget loaderWidget(){
+  Widget loaderWidget() {
     return Container(
       alignment: Alignment.center,
       decoration: menuDecoration(),
-      height:calculateHeight(),
+      height: calculateHeight(),
       child: Center(
         child: widget.loaderWidget ?? const CircularProgressIndicator(),
       ),
