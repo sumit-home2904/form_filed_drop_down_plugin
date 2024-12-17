@@ -248,9 +248,7 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
   T? selectedItem;
   late List<T> items;
   final layerLink = LayerLink();
-  bool displayOverlayBottom = true;
   final GlobalKey textFieldKey = GlobalKey();
-  final key1 = GlobalKey(), key2 = GlobalKey();
   bool isTypingDisabled = false;
   final TextEditingController textController = TextEditingController();
 
@@ -292,6 +290,7 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
     if (widget.item != oldWidget.item || widget.onSearch != oldWidget.onSearch) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         items = widget.item;
+        setState(() {});
       });
     }
 
@@ -307,9 +306,9 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
         }else{
           selectedItem = widget.initialItem;
           textController.text =  selectedItemConvertor(listData: widget.initialItem) ?? "";
-          // print(selectedItem);
         }
       }
+      setState(() {});
     });
   }
 
@@ -334,6 +333,7 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
                 widget.onSearch!("");
               }
             }
+            setState(() {});
             widget.controller.hide();
           },
           child: Container(
@@ -429,8 +429,6 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
   /// drop-down search or text form filed on change function
   onChange(value) async {
     if (value.isEmpty) {
-      // selectedItem = null;
-      // widget.onChanged(null);
       onSearchCalled("");
     }else {
       onSearchCalled(value);

@@ -77,17 +77,19 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
     double addButtonHeight = 0;
     double itemHeight = 40; // Default height
 
-    // Calculate add button height
-    if (context != null) {
-      final renderBox = context.findRenderObject() as RenderBox?;
-      addButtonHeight = renderBox?.size.height ?? 0.0;
-    }
+    try {
+      // Calculate add button height
+      if (context != null) {
+        final renderBox = context.findRenderObject() as RenderBox?;
+        addButtonHeight = renderBox?.size.height ?? 0.0;
+      }
 
-    // Calculate item height
-    if (itemKeyContext != null) {
-      final renderBox = itemKeyContext.findRenderObject() as RenderBox?;
-      itemHeight = renderBox?.size.height ?? 40; // Default to 40
-    }
+      // Calculate item height
+      if (itemKeyContext != null) {
+        final renderBox = itemKeyContext.findRenderObject() as RenderBox?;
+        itemHeight = renderBox?.size.height ?? 40; // Default to 40
+      }
+    }catch(_){}
 
     if (widget.canShowButton) {
       if (widget.item.isNotEmpty) {
@@ -163,7 +165,9 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
 
     if(widget.initialItem != oldWidget.initialItem) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        selectedItem = (widget.initialItem as T)??null;
+        setState(() {
+          selectedItem = (widget.initialItem as T)??null;
+        });
       });
     }
 
@@ -234,10 +238,8 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
           children: [
             if(widget.canShowButton)
               if(widget.addButton!=null)
-              SizedBox(
-                  key: addButtonKey,
-                  child: widget.addButton??SizedBox(key: addButtonKey)
-              ),
+              SizedBox(child: widget.addButton??SizedBox()),
+
             const SizedBox(height:2),
             Expanded(
               child: ListView.builder(
@@ -275,8 +277,6 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
   bool isItemSelected(int index) {
     String? selectedValue = selectedItemConvertor(selectedItem)??"";
     String? selectedIndexValue = selectedItemConvertor(widget.item[index]);
-    // print("object:---> $selectedValue");
-    // print("object 2:---> $selectedIndexValue");
     bool selectedItemValue = false;
     if(selectedItem != null) {
       selectedItemValue = (selectedItem as T) == widget.item[index];
@@ -291,7 +291,6 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
   /// the user side, we will provide our own default decoration.
   BoxDecoration menuDecoration(){
     if (widget.menuDecoration != null) return widget.menuDecoration!;
-
     return BoxDecoration(
         color: Colors.grey,
         borderRadius: BorderRadius.circular(5)
@@ -335,9 +334,7 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
         children: [
           if(widget.canShowButton)
             if(widget.addButton!=null)
-              SizedBox(
-                  key: addButtonKey,
-                  child: widget.addButton??SizedBox(key: addButtonKey)
+              SizedBox(child: widget.addButton??SizedBox()
               ),
           Spacer(),
           widget.errorMessage ?? const Text("No options"),
