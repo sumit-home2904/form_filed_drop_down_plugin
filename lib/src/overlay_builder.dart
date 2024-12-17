@@ -65,6 +65,7 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
   bool displayOverlayBottom = true;
 
   final GlobalKey itemListKey = GlobalKey();
+  final GlobalKey errorButtonKey = GlobalKey();
   final GlobalKey addButtonKey = GlobalKey();
   final key1 = GlobalKey(), key2 = GlobalKey();
 
@@ -73,7 +74,9 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
     try {
       final context = addButtonKey.currentContext;
       final itemKeyContext = itemListKey.currentContext;
+      final errorKeyContext = errorButtonKey.currentContext;
       double addButtonHeight = 0;
+      double errorButtonHeight = 0;
       double itemHeight = 40; // Default height
 
       // Calculate add button height
@@ -88,11 +91,20 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
         itemHeight = renderBox?.size.height ?? 40; // Default to 40
       }
 
+      if (errorKeyContext != null) {
+        final renderBox = errorKeyContext.findRenderObject() as RenderBox?;
+        errorButtonHeight = renderBox?.size.height ?? 40; // Default to 40
+      }
+
       if (widget.canShowButton) {
+        // print("object 1");
         if (widget.item.isNotEmpty) {
-          return widget.item.length * itemHeight + addButtonHeight;
+          // print("object 2");
+          // print("object ${widget.item.length}, $itemHeight ,$addButtonHeight");
+          return widget.item.length * itemHeight + errorButtonHeight + addButtonHeight;
         } else {
-          return widget.errorWidgetHeight ?? (addButtonHeight + 40);
+          // print("object 3");
+          return widget.errorWidgetHeight ?? (errorButtonHeight + addButtonHeight + 40);
         }
       } else {
         if (widget.item.isNotEmpty) {
@@ -101,7 +113,7 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
         if (widget.isApiLoading) {
           return 150; // Default loading height
         } else {
-          return widget.errorWidgetHeight ?? (addButtonHeight + 40);
+          return widget.errorWidgetHeight ?? (errorButtonHeight + addButtonHeight + 40);
         }
       }
     } catch (_) {
@@ -180,6 +192,7 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
 
   @override
   Widget build(BuildContext context) {
+    // print(calculateHeight());
     return CompositedTransformFollower(
         link: widget.layerLink,
         offset: setOffset(),
@@ -225,7 +238,7 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
           children: [
             if (widget.canShowButton)
               if (widget.addButton != null)
-                SizedBox(child: widget.addButton ?? SizedBox()),
+                SizedBox(key:addButtonKey,child: widget.addButton ?? SizedBox(key:addButtonKey)),
             const SizedBox(height: 2),
             Expanded(
               child: ListView.builder(
@@ -306,7 +319,7 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
   /// is happening in the UI. Additionally, the user can enter their custom message as well.
   Widget emptyErrorWidget() {
     return Container(
-      key: addButtonKey,
+      key: errorButtonKey,
       decoration: menuDecoration(),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -314,7 +327,7 @@ class _OverlayOutBuilderState<T> extends State<OverlayBuilder<T>> {
         children: [
           if (widget.canShowButton)
             if (widget.addButton != null)
-              SizedBox(child: widget.addButton ?? SizedBox()),
+              SizedBox(key:addButtonKey,child: widget.addButton ?? SizedBox(key:addButtonKey)),
           Spacer(),
           widget.errorMessage ?? const Text("No options"),
           Spacer(),

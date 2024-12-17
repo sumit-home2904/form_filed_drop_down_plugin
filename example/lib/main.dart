@@ -23,8 +23,8 @@ class MyApp extends StatelessWidget {
           seedColor: Colors.deepPurple,
           primary: Colors.deepPurple,
         ),
-        appBarTheme:const AppBarTheme(
-          color:  Colors.deepPurple,
+        appBarTheme: const AppBarTheme(
+          color: Colors.deepPurple,
         ),
         useMaterial3: true,
       ),
@@ -41,12 +41,10 @@ class DropDownClass extends StatefulWidget {
 }
 
 class _DropDownClassState extends State<DropDownClass> {
-
   final countryController = OverlayPortalController();
   final stateController = OverlayPortalController();
   final cityController = OverlayPortalController();
   final itemController = OverlayPortalController();
-
 
   CountryModel? selectedCountry;
   StatesModel? selectedState;
@@ -57,7 +55,6 @@ class _DropDownClassState extends State<DropDownClass> {
   List<StatesModel> statesList = [];
   List<CityModel> tempCityList = [];
   List<CityModel> cityList = [];
-
 
   FocusNode focusNode = FocusNode();
   FocusNode focusNode2 = FocusNode();
@@ -71,7 +68,6 @@ class _DropDownClassState extends State<DropDownClass> {
     List list = cityData['city'].cast<Map<String, dynamic>>();
     cityList.addAll(list.map((e) => CityModel.fromJson(e)).toList());
     setState(() {});
-
   }
 
   Future<void> loadState() async {
@@ -92,7 +88,6 @@ class _DropDownClassState extends State<DropDownClass> {
     setState(() {});
   }
 
-
   @override
   void initState() {
     super.initState();
@@ -107,25 +102,23 @@ class _DropDownClassState extends State<DropDownClass> {
       appBar: AppBar(
         title: const Text(
           "FormFiled DropDown Example",
-          style: TextStyle(
-              color: Colors.white
-          ),
+          style: TextStyle(color: Colors.white),
         ),
       ),
       body: CallbackShortcuts(
         bindings: {
-          LogicalKeySet(LogicalKeyboardKey.tab):() async {
-            if(focusNode.hasFocus){
+          LogicalKeySet(LogicalKeyboardKey.tab): () async {
+            if (focusNode.hasFocus) {
               focusNode2.requestFocus();
               stateController.show();
               countryController.hide();
               cityController.hide();
-            }else if(focusNode2.hasFocus){
+            } else if (focusNode2.hasFocus) {
               focusNode3.requestFocus();
               stateController.hide();
               countryController.hide();
               cityController.show();
-            }else if(focusNode3.hasFocus){
+            } else if (focusNode3.hasFocus) {
               focusNode.requestFocus();
               stateController.hide();
               cityController.hide();
@@ -141,278 +134,256 @@ class _DropDownClassState extends State<DropDownClass> {
                 children: [
                   Expanded(
                       child: FormFiledDropDown<CountryModel>(
-                        focusNode: focusNode,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        controller: countryController,
-                        initialItem: selectedCountry,
-                        item : countryList,
-                        textStyle: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400
-                        ),
-                        menuDecoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(
-                                color: Colors.blueAccent
-                            )
-                        ),
-                        filedDecoration: InputDecoration(
-                          suffixIcon: IntrinsicWidth(
-                            child: Row(
-                              children: [
-                                if(selectedCountry != null)
-                                  InkWell(
-                                    onTap:() {
-                                      setState(() {
-                                        tempCityList = [];
-                                        tempStatesList = [];
-                                        // print(tempStatesList.length);
-                                        selectedCity = null;
-                                        selectedState = null;
-                                        selectedCountry = null;
-                                        loadCountry();
-                                      });
-                                    },
-                                    child: const Icon(
-                                      Icons.clear,
-                                      size: 20,
-                                    ),
-                                  ),
-
-                                if(selectedCountry != null)
-                                  const SizedBox(width: 5),
-                                const Icon(
-                                  Icons.arrow_drop_down_sharp,
+                    focusNode: focusNode,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    controller: countryController,
+                    initialItem: selectedCountry,
+                    item: countryList,
+                    textStyle: const TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.w400),
+                    menuDecoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(color: Colors.blueAccent)),
+                    filedDecoration: InputDecoration(
+                      suffixIcon: IntrinsicWidth(
+                        child: Row(
+                          children: [
+                            if (selectedCountry != null)
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    tempCityList = [];
+                                    tempStatesList = [];
+                                    // print(tempStatesList.length);
+                                    selectedCity = null;
+                                    selectedState = null;
+                                    selectedCountry = null;
+                                    loadCountry();
+                                  });
+                                },
+                                child: const Icon(
+                                  Icons.clear,
                                   size: 20,
                                 ),
-                                const SizedBox(width: 8),
-
-                              ],
-                            ),
-                          ),
-
-                        ),
-                        onChanged: (CountryModel? value) {
-                          setState(() {
-                            selectedCountry = value;
-                            selectedCity = null;
-                            selectedState = null;
-                            tempStatesList = [];
-                            tempCityList = [];
-                            tempStatesList = statesList.where((element) {
-                              return "${element.countryId}" == "${selectedCountry?.id}";
-                            }).toList();
-                          });
-                        },
-                        onSearch: (value) async {
-                          return countryList.where((element) {
-                            return element.name.toLowerCase().contains(value.toLowerCase());
-                          }).toList();
-                        },
-                        listItemBuilder: (context, item, isSelected) {
-                          int index = countryList.indexOf(item);
-                          return Container(
-                            padding:const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                            margin: EdgeInsets.fromLTRB(5, index == 0 ? 7:2,5,1),
-                            decoration: BoxDecoration(
-                                color: isSelected ? Colors.green : Colors.transparent,
-                                borderRadius: BorderRadius.circular(2)
-                            ),
-                            child: Text(
-                              item.name,
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  color: isSelected ? Colors.white : Colors.black,
-                                  fontWeight: FontWeight.w400
                               ),
+                            if (selectedCountry != null)
+                              const SizedBox(width: 5),
+                            const Icon(
+                              Icons.arrow_drop_down_sharp,
+                              size: 20,
                             ),
-                          );
-                        },
-                        selectedItemBuilder: (context,item) {
-                          return Text(
-                            item.name,
-                            style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400
-                            ),
-                          );
-                        },
-                      )
-                  ),
+                            const SizedBox(width: 8),
+                          ],
+                        ),
+                      ),
+                    ),
+                    onChanged: (CountryModel? value) {
+                      setState(() {
+                        selectedCountry = value;
+                        selectedCity = null;
+                        selectedState = null;
+                        tempStatesList = [];
+                        tempCityList = [];
+                        tempStatesList = statesList.where((element) {
+                          return "${element.countryId}" ==
+                              "${selectedCountry?.id}";
+                        }).toList();
+                      });
+                    },
+                    onSearch: (value) async {
+                      return countryList.where((element) {
+                        return element.name
+                            .toLowerCase()
+                            .contains(value.toLowerCase());
+                      }).toList();
+                    },
+                    listItemBuilder: (context, item, isSelected) {
+                      int index = countryList.indexOf(item);
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 5),
+                        margin:
+                            EdgeInsets.fromLTRB(5, index == 0 ? 7 : 2, 5, 1),
+                        decoration: BoxDecoration(
+                            color:
+                                isSelected ? Colors.green : Colors.transparent,
+                            borderRadius: BorderRadius.circular(2)),
+                        child: Text(
+                          item.name,
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: isSelected ? Colors.white : Colors.black,
+                              fontWeight: FontWeight.w400),
+                        ),
+                      );
+                    },
+                    selectedItemBuilder: (context, item) {
+                      return Text(
+                        item.name,
+                        style: const TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.w400),
+                      );
+                    },
+                  )),
                   const SizedBox(width: 15),
-
                   Expanded(
                       child: FormFiledDropDown<StatesModel>(
-                        focusNode: focusNode2,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        controller: stateController,
-                        initialItem: selectedState,
-                        item : tempStatesList,
-                        textStyle: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400
-                        ),
-                        menuDecoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(
-                                color: Colors.blueAccent
-                            )
-                        ),
-                        filedDecoration: InputDecoration(
-                          suffixIcon: IntrinsicWidth(
-                            child: Row(
-                              children: [
-                                if(selectedState != null)
-                                  InkWell(
-                                    onTap:() {
-                                      setState(() {
-                                        selectedState = null;
-                                        if(selectedCountry == null) tempStatesList.clear();
-                                      });
-                                    },
-                                    child: const Icon(
-                                      Icons.clear,
-                                      size: 20,
-                                    ),
-                                  ),
-
-                                if(selectedState != null)
-                                  const SizedBox(width: 5),
-                                const Icon(
-                                  Icons.arrow_drop_down_sharp,
+                    focusNode: focusNode2,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    controller: stateController,
+                    initialItem: selectedState,
+                    item: tempStatesList,
+                    textStyle: const TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.w400),
+                    menuDecoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(color: Colors.blueAccent)),
+                    filedDecoration: InputDecoration(
+                      suffixIcon: IntrinsicWidth(
+                        child: Row(
+                          children: [
+                            if (selectedState != null)
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    selectedState = null;
+                                    if (selectedCountry == null)
+                                      tempStatesList.clear();
+                                  });
+                                },
+                                child: const Icon(
+                                  Icons.clear,
                                   size: 20,
                                 ),
-                                const SizedBox(width: 8),
-
-                              ],
-                            ),
-                          ),
-                        ),
-                        onChanged: (StatesModel? value) {
-                          setState(() {
-                            tempCityList = [];
-                            selectedCity = null;
-                            selectedState = value;
-
-                            tempCityList = cityList.where((element) {
-                              return "${element.stateId}" == "${selectedState?.id}";
-                            }).toList();
-
-                          });
-                        },
-
-                        onSearch: (value) async {
-                          return statesList.where((element) {
-                            return element.name.toLowerCase().contains(value.toLowerCase());
-                          }).toList();
-                        },
-                        listItemBuilder: (context, item, isSelected) {
-                          // print("isSelected $isSelected");
-                          int index = statesList.indexOf(item);
-                          return Container(
-                            padding:const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                            margin: EdgeInsets.fromLTRB(5, index == 0 ? 7:2,5,1),
-                            decoration: BoxDecoration(
-                                color: isSelected ? Colors.green : Colors.transparent,
-                                borderRadius: BorderRadius.circular(2)
-                            ),
-                            child: Text(
-                              item.name,
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  color: isSelected ? Colors.white : Colors.black,
-                                  fontWeight: FontWeight.w400
                               ),
+                            if (selectedState != null) const SizedBox(width: 5),
+                            const Icon(
+                              Icons.arrow_drop_down_sharp,
+                              size: 20,
                             ),
-                          );
-                        },
-                      )
-                  ),
-                  const SizedBox(width: 15),
+                            const SizedBox(width: 8),
+                          ],
+                        ),
+                      ),
+                    ),
+                    onChanged: (StatesModel? value) {
+                      setState(() {
+                        tempCityList = [];
+                        selectedCity = null;
+                        selectedState = value;
 
+                        tempCityList = cityList.where((element) {
+                          return "${element.stateId}" == "${selectedState?.id}";
+                        }).toList();
+                      });
+                    },
+                    onSearch: (value) async {
+                      return statesList.where((element) {
+                        return element.name
+                            .toLowerCase()
+                            .contains(value.toLowerCase());
+                      }).toList();
+                    },
+                    listItemBuilder: (context, item, isSelected) {
+                      // print("isSelected $isSelected");
+                      int index = statesList.indexOf(item);
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 5),
+                        margin:
+                            EdgeInsets.fromLTRB(5, index == 0 ? 7 : 2, 5, 1),
+                        decoration: BoxDecoration(
+                            color:
+                                isSelected ? Colors.green : Colors.transparent,
+                            borderRadius: BorderRadius.circular(2)),
+                        child: Text(
+                          item.name,
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: isSelected ? Colors.white : Colors.black,
+                              fontWeight: FontWeight.w400),
+                        ),
+                      );
+                    },
+                  )),
+                  const SizedBox(width: 15),
                   Expanded(
                       child: FormFiledDropDown<CityModel>(
-                        focusNode: focusNode3,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        controller: cityController,
-                        readOnly: tempCityList.isEmpty,
-                        initialItem: selectedCity,
-                        item : tempCityList,
-                        textStyle: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400
-                        ),
-                        menuDecoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(
-                                color: Colors.blueAccent
-                            )
-                        ),
-                        filedDecoration: InputDecoration(
-                          suffixIcon: IntrinsicWidth(
-                            child: Row(
-                              children: [
-                                if(selectedCity != null)
-                                  InkWell(
-                                    onTap:() {
-                                      setState(() {
-                                        selectedCity = null;
-                                        if(selectedState == null) tempCityList.clear();
-
-                                      });
-                                    },
-                                    child: const Icon(
-                                      Icons.clear,
-                                      size: 20,
-                                    ),
-                                  ),
-
-                                if(selectedCity != null)
-                                  const SizedBox(width: 5),
-                                const Icon(
-                                  Icons.arrow_drop_down_sharp,
+                    focusNode: focusNode3,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    controller: cityController,
+                    readOnly: tempCityList.isEmpty,
+                    initialItem: selectedCity,
+                    item: tempCityList,
+                    textStyle: const TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.w400),
+                    menuDecoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(color: Colors.blueAccent)),
+                    filedDecoration: InputDecoration(
+                      suffixIcon: IntrinsicWidth(
+                        child: Row(
+                          children: [
+                            if (selectedCity != null)
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    selectedCity = null;
+                                    if (selectedState == null)
+                                      tempCityList.clear();
+                                  });
+                                },
+                                child: const Icon(
+                                  Icons.clear,
                                   size: 20,
                                 ),
-                                const SizedBox(width: 8),
-
-                              ],
-                            ),
-                          ),
-                        ),
-                        onChanged: (CityModel? value) {
-                          setState(() {
-                            selectedCity = value;
-                          });
-                        },
-                        onSearch: (value) async {
-                          return tempCityList.where((element) {
-                            return element.name.toLowerCase().contains(value.toLowerCase());
-                          }).toList();
-                        },
-                        listItemBuilder: (context, item, isSelected) {
-                          int index = cityList.indexOf(item);
-                          return Container(
-                            padding:const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                            margin: EdgeInsets.fromLTRB(5, index == 0 ? 7:2,5,1),
-                            decoration: BoxDecoration(
-                                color: isSelected ? Colors.green : Colors.transparent,
-                                borderRadius: BorderRadius.circular(2)
-                            ),
-                            child: Text(
-                              item.name,
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  color: isSelected ? Colors.white : Colors.black,
-                                  fontWeight: FontWeight.w400
                               ),
+                            if (selectedCity != null) const SizedBox(width: 5),
+                            const Icon(
+                              Icons.arrow_drop_down_sharp,
+                              size: 20,
                             ),
-                          );
-                        },
-                      )
-                  )
+                            const SizedBox(width: 8),
+                          ],
+                        ),
+                      ),
+                    ),
+                    onChanged: (CityModel? value) {
+                      setState(() {
+                        selectedCity = value;
+                      });
+                    },
+                    onSearch: (value) async {
+                      return tempCityList.where((element) {
+                        return element.name
+                            .toLowerCase()
+                            .contains(value.toLowerCase());
+                      }).toList();
+                    },
+                    listItemBuilder: (context, item, isSelected) {
+                      int index = cityList.indexOf(item);
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 5),
+                        margin:
+                            EdgeInsets.fromLTRB(5, index == 0 ? 7 : 2, 5, 1),
+                        decoration: BoxDecoration(
+                            color:
+                                isSelected ? Colors.green : Colors.transparent,
+                            borderRadius: BorderRadius.circular(2)),
+                        child: Text(
+                          item.name,
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: isSelected ? Colors.white : Colors.black,
+                              fontWeight: FontWeight.w400),
+                        ),
+                      );
+                    },
+                  ))
                 ],
               ),
             ],
@@ -422,4 +393,3 @@ class _DropDownClassState extends State<DropDownClass> {
     );
   }
 }
-
