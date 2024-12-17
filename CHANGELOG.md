@@ -1,3 +1,6 @@
+# 3.0.3
+bug fixed
+
 # 3.0.2
 search selection issue fixed# 
 
