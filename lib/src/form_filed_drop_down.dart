@@ -304,6 +304,8 @@ class _FormFiledDropDownState<T> extends State<FormFiledDropDown<T>> {
           if(widget.onSearch != null) widget.onSearch!("");
         }else{
           selectedItem = widget.initialItem;
+          textController.text =  selectedItemConvertor(listData: widget.initialItem) ?? "";
+          // print(selectedItem);
         }
       }
     });
